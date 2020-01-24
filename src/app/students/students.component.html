@@ -1,0 +1,41 @@
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">  
+
+<div class="row">
+    <!--div class="input-group mb-3 col-md-3">
+        <div *ngFor="let opt of FormClass" class="input-group-prepend">
+          <a href="#"><span class="input-group-text" id="basic-addon1">Form Class</span></a>
+        </div>
+        <select (change)="showClassList($event.target.value)" class="form-control">
+            <option *ngFor="let opt of FormClass" [value]="opt">{{opt}}</option>
+        </select>
+    </div-->
+    <div class="nav nav-pills mb-3" *ngFor="let class of ClassLinks" >
+          <a routerLink="/students/{{class.link}}" [routerLinkActive]="['active']" class="btn btn-outline-primary ml-2">Class: [{{class.text}}]</a> 
+    </div>
+</div>
+<div class="table-responsive-sm">
+<table id="table_id" class="table table-sm table-hover table-bordered" >
+    <thead>
+        <tr>
+            <th>User name</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Gender</th>
+            <th style="width:80px;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let student of StudentList">
+            <td>{{student.username}}</td>
+            <td>{{student.firstname}}</td>
+            <td>{{student.lastname}}</td>
+            <td>{{student.gender}}</td>
+            <td class="text-center">            
+                <a routerLink="/view-student/{{student.account_id}}" title="view {{student.firstname | lowercase}} {{student.lastname | lowercase}} info" href=""><i class="fas fa-eye"></i></a>&nbsp;&nbsp;
+                <a routerLink="/edit-student/{{student.account_id}}" title="edit {{student.firstname | lowercase}} {{student.lastname | lowercase}} info" ><i class="fas fa-user-edit"></i></a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
