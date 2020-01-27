@@ -1,0 +1,45 @@
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">{{School.name}} </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div><label><b>Motto:</b> {{School.motto}}</label></div>
+                        <div><label><b>URL:</b> {{School.url_name}}</label></div>
+        
+                        <div><label><b>Phone:</b> {{School.phone_num1}}</label></div>
+                        <div><label><b>Phone:</b> {{School.phone_num2}}</label></div>
+                        <div><label><b>Fax:</b> {{School.fax}}</label></div>
+                        <div><label><b>Email:</b> {{School.email}}</label></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div>{{School.street}}</div>
+                        <div>{{School.city_town}}</div>
+                        <div>{{School.zip_code}}</div>
+                        <div>{{School.parish_id}}</div>
+                        <div>{{School.country_id}}</div>
+                    </div>
+                </div>
+                <hr>
+                <p [innerHTML]="School.about_school"></p>
+                <p>{{School.logo}}</p>
+                <p>{{School.school_id}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Subjects</h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-group" >
+                    <li *ngFor="let subject of School.subject_list" class="list-group-item">{{subject.name}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

@@ -7,5 +7,6 @@ import { Component } from '@angular/core';
 })
 
 export class AppComponent {
+  readonly copyright = "Copyright &copy; Your Website " + new Date().getFullYear();
   readonly PagetTitle = 'Nova';
 }

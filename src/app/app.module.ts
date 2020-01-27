@@ -8,6 +8,7 @@ import { StudentsComponent } from './students/students.component';
 import { EditStudentsComponent } from './edit-students/edit-students.component';
 import { ViewStudentComponent } from './view-student/view-student.component';
 import { SidemenuComponent } from './sidemenu/sidemenu.component';
+import { ViewSchoolComponent } from './view-school/view-school.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { SidemenuComponent } from './sidemenu/sidemenu.component';
     StudentsComponent,
     EditStudentsComponent,
     ViewStudentComponent,
-    SidemenuComponent
+    SidemenuComponent,
+    ViewSchoolComponent
   ],
   imports: [
     BrowserModule,
