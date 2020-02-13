@@ -1,6 +1,6 @@
 export interface IStudent 
 {
-    account_id:Number,
+    acconut_id:Number,
     username:String, 
     firstname:String, 
     middlename:String, 

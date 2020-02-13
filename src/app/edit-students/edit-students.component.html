@@ -1,1 +1,70 @@
-<p>edit-students works!</p>
+<form [formGroup]="formData" (ngSubmit)="onSubmit(formData.value)" >
+    <div class="row">
+        <div class="col-sm-6" *ngIf="Students" >
+            <div class="form-group">
+                <label for="acconut_id">First name</label>
+                <input type="text" class="form-control" readonly formControlName="acconut_id" id="acconut_id" value="{{Students.acconut_id}}">
+            </div>
+            <div class="form-group">
+                <label for="firstname">First name</label>
+                <input type="text" class="form-control" formControlName="firstname" id="firstname" value="{{Students.firstname}}">
+            </div>
+            <div class="form-group">
+                <label for="middlename">Middle name</label>
+                <input type="text" class="form-control" formControlName="middlename" id="middlename" value="{{Students.middlename}}">
+            </div>
+            <div class="form-group">
+                <label for="lastname">Last name</label>
+                <input type="text" class="form-control" formControlName="lastname" id="lastname" value="{{Students.lastname}}">
+            </div>
+            <div class="form-group btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-primary active">
+                    <input type="radio" class="form-control" formControlName="gender" id="gender" value="F" checked>
+                    Female
+                </label>
+                <label class="btn btn-primary">
+                    <input type="radio" class="form-control" formControlName="gender" id="gender" value="M" >
+                    Male
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="dob">Date Of Birth</label>
+                <input type="text" class="form-control" formControlName="dob" id="dob" value="{{Students.dob}}">
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="enrollment_date">Enrollment Date</label>
+                <input type="text" class="form-control" formControlName="enrollment_date" id="enrollment_date" value="{{Students.enrollment_date}}">
+            </div>
+            <div class="form-group">
+                <label for="class_room_id">Class</label>
+                <select class="form-control" >
+                    <option value="">--</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="house_color_id">House-color</label>
+                <select class="form-control" >
+                    <option>Select House Colour</option>
+                </select>
+            </div>
+            <div class="form-group">
+                Extracurricular activity<br>
+                <div class="form-check" *ngFor="let ex of extraCurricular">
+                    <input type="checkbox" class="form-check-input" value="{{ex.id}}" >
+                    <label class="form-check-label" >{{ex.name}}</label>
+                </div>
+            </div>
+            <div class="form-group">
+                Responsibilities<br>
+                <div class="form-check" *ngFor="let res of responsibilities">
+                    <input type="checkbox" class="form-check-input" value="{{res.id}}" >
+                    <label class="form-check-label" >{{res.name}}</label>
+                </div>
+            </div>      
+        </div>
+    </div>
+    <button class="btn btn-primary">Submit</button>
+</form>
