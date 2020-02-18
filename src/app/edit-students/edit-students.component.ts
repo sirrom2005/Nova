@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { IStudent } from "../Interface/IStudent";
+import { IAccount } from "../Interface/IAccount";
 import { AppGlobals } from "../common/app-globals";
 import { IKeyValue } from '../Interface/IValueKey';
 import { forkJoin } from 'rxjs';
@@ -16,10 +16,7 @@ import { forkJoin } from 'rxjs';
 
 export class EditStudentsComponent implements OnInit {
   studentid:String;
-  Students = {
-      classroom: {},
-      housecolor: {}
-    };
+  Students:IAccount;
   formData:FormGroup;
   extraCurricular:IKeyValue;
   responsibilities:IKeyValue;
@@ -27,6 +24,10 @@ export class EditStudentsComponent implements OnInit {
   houseColor:IKeyValue;
   defaultSchooolId = 2011040016;
   schoolcitizenship: IKeyValue;
+  countrylist: {};
+  statelist: {};
+  classRoomLstId:Number;
+  houseColorIdLst:Number;
 
   constructor(private formBuilder:FormBuilder, private http:HttpClient, private route: ActivatedRoute) { 
     /*this.formData = this.formBuilder.group({
@@ -46,31 +47,36 @@ export class EditStudentsComponent implements OnInit {
     //Extra Curricular Activity List
     let req2 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/extracurricularactivity');
     //Class List by school id
-    let req3 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + `/valuekey/class/${this.defaultSchooolId}`)
+    let req3 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + `/valuekey/class/${this.defaultSchooolId}`);
     //Responsibilities List
-    let req4 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/responsibilities')
+    let req4 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/responsibilities');
     //Citenzenship List
-    let req5 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/schoolcitizenship')
+    let req5 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/schoolcitizenship');
+    //Country List
+    let req6 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/country');
 
-    forkJoin(req1, req2, req3, req4, req5).subscribe(
+    forkJoin(req1, req2, req3, req4, req5, req6).subscribe(
       json => 
             {
-              this.houseColor = json[0];
-              this.extraCurricular = json[1];
-              this.classList = json[2];
-              this.responsibilities = json[3];
-              this.schoolcitizenship = json[4];
-            }
+              this.houseColor         = json[0];
+              this.extraCurricular    = json[1];
+              this.classList          = json[2];
+              this.responsibilities   = json[3];
+              this.schoolcitizenship  = json[4];
+              this.countrylist        = json[5];
+              
+              //Load Account data
+              this.route.paramMap.subscribe(params => { 
+                this.studentid = params.get('student_id'); 
+                this.http.get<IAccount>(AppGlobals.API_DOMAIN + '/accounts/' + this.studentid).
+                subscribe(data => {
+                  this.getStateList(data.country_id-1);
+                  this.Students = data;
+                });
+              });
+             
+            }      
     );
-
-    //Load Account data
-    this.route.paramMap.subscribe(params => { 
-      this.studentid = params.get('student_id'); 
-      this.http.get<any>(AppGlobals.API_DOMAIN + '/accounts/' + this.studentid).
-      subscribe(data => {
-        this.Students = data;
-      });
-    });
   }
 
   onSubmit(account) {
@@ -82,4 +88,23 @@ export class EditStudentsComponent implements OnInit {
       console.log(data);
     });
   }
+
+  getStateList(idx){
+    this.statelist = this.countrylist[idx].countrystate;
+  }
+
+ /* isActive: number = 1
+ 
+  get extraCurricularActivity() {
+    return this.isActive == 1
+  }
+ 
+  set extraCurricularActivity(newValue:boolean) { 
+    this.isActive = newValue ? 1 : 0;
+    alert(this.isActive);
+  }
+
+  set setExtraCurricularActivity(id){
+    alert(id);
+  }*/ 
 }
