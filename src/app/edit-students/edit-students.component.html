@@ -2,15 +2,19 @@
     <div class="row">
         <div class="col-sm-6" *ngIf="Students" >
             <div class="form-group">
-                <label for="firstname">First name</label>
+                <label for="acconut_id">Student ID</label>
+                <input type="text" class="form-control" id="acconut_id" value="{{Students.acconut_id}}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="firstname">First Name</label>
                 <input type="text" class="form-control" [(ngModel)]="Students.firstname" name="firstname" id="firstname" >
             </div>
             <div class="form-group">
-                <label for="middlename">Middle name</label>
+                <label for="middlename">Middle Name</label>
                 <input type="text" class="form-control" [(ngModel)]="Students.middlename" name="middlename" id="middlename" >
             </div>
             <div class="form-group">
-                <label for="lastname">Last name</label>
+                <label for="lastname">Last Name</label>
                 <input type="text" class="form-control" [(ngModel)]="Students.lastname" name="lastname" id="lastname" >
             </div> 
             <div class="form-group">
@@ -22,47 +26,93 @@
                 <input type="date" class="form-control" [(ngModel)]="Students.dob" name="dob" id="dob" >
             </div>
             <div class="form-group">
-                <label class="mr-3">
-                    <input type="radio" [(ngModel)]="Students.gender" name="gender" value="F"> Female    
+                <label for="F" class="mr-3">
+                    <input type="radio" [(ngModel)]="Students.gender" name="gender" id="F" value="F"> Female    
                 </label> 
-                <label>
-                    <input type="radio" [(ngModel)]="Students.gender" name="gender" value="M" > Male 
+                <label for="M">
+                    <input type="radio" [(ngModel)]="Students.gender" name="gender" id="M" value="M" > Male 
                 </label>
-            </div>
+            </div>          
         </div>
 
-        <div class="col-sm-6">
+        <div class="col-sm-6" *ngIf="Students" >
             <div class="form-group">
-                <label for="enrollment_date">Enrollment Date</label>
-                <input type="date" class="form-control" [(ngModel)]="Students.enrollment_date" name="enrollment_date" >
+                <label for="street">Street</label>
+                <input type="text" class="form-control" [(ngModel)]="Students.street" name="street" id="street" >
             </div>
+            <div class="form-group">
+                <label for="city_town">City/Town</label>
+                <input type="text" class="form-control" [(ngModel)]="Students.city_town" name="city_town" id="city_town" >
+            </div>
+            <div class="form-group">
+                <label for="zip_code">Zip Code</label>
+                <input type="text" class="form-control" [(ngModel)]="Students.zip_code" name="zip_code" id="zip_code" >
+            </div>
+            <div class="form-group">
+                <label for="country_id">Country</label>
+                <input type="text" class="form-control" [(ngModel)]="Students.country_id" name="country_id" id="dob" >
+            </div>
+            <div class="form-group">
+                <label for="parish_id">State/Parish</label>
+                <input type="text" class="form-control" [(ngModel)]="Students.parish_id" name="parish_id" id="parish_id">
+            </div>
+            <div class="form-group">
+                <label for="phone_home">Home Phone</label>
+                <input type="tel" class="form-control" [(ngModel)]="Students.phone_home" name="phone_home" id="phone_home">
+            </div>
+            <div class="form-group">
+                <label for="phone_mobile">Mobile Phone</label>
+                <input type="tel" class="form-control" [(ngModel)]="Students.phone_mobile" name="phone_mobile" id="phone_mobile" >
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-sm-6">
             <div class="form-group" *ngIf="classList">
-                <label for="class_room_id">Class</label>
-                <select class="form-control" [(ngModel)]="Students.classroom.class_room_id" name="class_room_id" >
+                <label for="class_room_id">Class Room</label>
+                <select class="form-control" [(ngModel)]="Students.classroom.class_room_id" name="class_room_id" id="class_room_id" >
                     <option *ngFor="let clss of classList" value="{{clss.id}}">{{clss.name}}</option>
                 </select>
             </div>
+            <div class="form-group">
+                Extracurricular Activity<br>
+                <div class="form-check" *ngFor="let val of extraCurricular">
+                    <label class="form-check-label" >
+                        <input type="checkbox" class="form-check-input" name="id" value="{{val.id}}" >
+                        {{val.name}}
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                Responsibilities<br>
+                <div class="form-check" *ngFor="let res of responsibilities">
+                    <label class="form-check-label" >
+                        <input type="checkbox" class="form-check-input" value="{{res.id}}" >
+                        {{res.name}}
+                    </label>
+                </div>
+            </div>  
+        </div> 
+        <div class="col-sm-6">
             <div class="form-group" *ngIf="houseColor">
                 <label for="house_color_id">House-color</label>
                 <select class="form-control" [(ngModel)]="Students.housecolor.id" name="id" >
                     <option *ngFor="let hc of houseColor" value="{{hc.id}}">{{hc.name}}</option>
                 </select>
             </div>
-            <!--div class="form-group">
-                Extracurricular activity<br>
-                <div class="form-check" *ngFor="let ex of extraCurricular; let i = index">
-                    <input type="checkbox" class="form-check-input" [(ngModel)]="ex.id" name="id" >
-                    <label class="form-check-label" >{{ex.name}}</label>
-                </div>
-            </div>
             <div class="form-group">
-                Responsibilities<br>
-                <div class="form-check" *ngFor="let res of responsibilities">
-                    <input type="checkbox" class="form-check-input" value="{{res.id}}" >
-                    <label class="form-check-label" >{{res.name}}</label>
+                School Citizenship<br>
+                <div class="form-check" *ngFor="let cit of schoolcitizenship">
+                    <label class="form-check-label" >
+                        <input type="checkbox" class="form-check-input" value="{{cit.id}}" >
+                        {{cit.name}}
+                    </label>
                 </div>
-            </div-->      
-        </div>
+            </div>  
+        </div>   
     </div>
-    <button class="btn btn-primary">Submit</button>
+    <div class="text-right">
+        <button class="btn btn-primary mb-3">Submit</button>
+    </div>
 </form>

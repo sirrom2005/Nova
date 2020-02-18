@@ -6,6 +6,7 @@ import { FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { IStudent } from "../Interface/IStudent";
 import { AppGlobals } from "../common/app-globals";
 import { IKeyValue } from '../Interface/IValueKey';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-edit-students',
@@ -15,13 +16,17 @@ import { IKeyValue } from '../Interface/IValueKey';
 
 export class EditStudentsComponent implements OnInit {
   studentid:String;
-  Students = {};
+  Students = {
+      classroom: {},
+      housecolor: {}
+    };
   formData:FormGroup;
   extraCurricular:IKeyValue;
   responsibilities:IKeyValue;
   classList:IKeyValue;
   houseColor:IKeyValue;
   defaultSchooolId = 2011040016;
+  schoolcitizenship: IKeyValue;
 
   constructor(private formBuilder:FormBuilder, private http:HttpClient, private route: ActivatedRoute) { 
     /*this.formData = this.formBuilder.group({
@@ -37,33 +42,31 @@ export class EditStudentsComponent implements OnInit {
 
   ngOnInit() {
     //House Color List
-    this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/housecolor/' + this.defaultSchooolId)
-    .subscribe(data => {
-      this.houseColor = data;
-    });
-
+    let req1 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + `/valuekey/housecolor/${this.defaultSchooolId}`);
     //Extra Curricular Activity List
-    this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/extracurricularactivity')
-      .subscribe(data => {
-        this.extraCurricular = data;
-    });
-
+    let req2 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/extracurricularactivity');
     //Class List by school id
-    this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/class/' + this.defaultSchooolId)
-    .subscribe(data => {
-      this.classList = data;
-    });
-
+    let req3 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + `/valuekey/class/${this.defaultSchooolId}`)
     //Responsibilities List
-    this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/responsibilities')
-    .subscribe(data => {
-      this.responsibilities = data;
-    });
+    let req4 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/responsibilities')
+    //Citenzenship List
+    let req5 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/schoolcitizenship')
+
+    forkJoin(req1, req2, req3, req4, req5).subscribe(
+      json => 
+            {
+              this.houseColor = json[0];
+              this.extraCurricular = json[1];
+              this.classList = json[2];
+              this.responsibilities = json[3];
+              this.schoolcitizenship = json[4];
+            }
+    );
 
     //Load Account data
     this.route.paramMap.subscribe(params => { 
       this.studentid = params.get('student_id'); 
-      this.http.get(AppGlobals.API_DOMAIN + '/accounts/' + this.studentid).
+      this.http.get<any>(AppGlobals.API_DOMAIN + '/accounts/' + this.studentid).
       subscribe(data => {
         this.Students = data;
       });
