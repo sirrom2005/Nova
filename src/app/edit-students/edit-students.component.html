@@ -83,10 +83,14 @@
                 Extracurricular Activity<br>
                 <div class="form-check" *ngFor="let val of extraCurricular; let i = index">
                     <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input" name="id" value="{{val.id}}" >
-                        {{val.name}}
+                        <input type="checkbox" 
+                        [checked]="isExChecked(val.id, i)" 
+                        (change)="$event.target.checked? (Students.extra_curricular_activity[i] = {id:val.id,name:val.name}) : (Students.extra_curricular_activity[i] = null)"
+                        class="form-check-input" name="id" value="{{val.id}}" >
+                        {{val.name}} >> 
                     </label>
                 </div>
+                <pre>{{ Students.extra_curricular_activity | json}}</pre>
             </div>
             <div class="form-group">
                 Responsibilities<br>

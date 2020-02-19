@@ -28,6 +28,7 @@ export class EditStudentsComponent implements OnInit {
   statelist: {};
   classRoomLstId:Number;
   houseColorIdLst:Number;
+  isExBoolChecked:Array<boolean> = [];
 
   constructor(private formBuilder:FormBuilder, private http:HttpClient, private route: ActivatedRoute) { 
     /*this.formData = this.formBuilder.group({
@@ -93,18 +94,45 @@ export class EditStudentsComponent implements OnInit {
     this.statelist = this.countrylist[idx].countrystate;
   }
 
- /* isActive: number = 1
+  isChecked:boolean = false;
  
-  get extraCurricularActivity() {
-    return this.isActive == 1
+  get value() {
+    return this.isChecked;
   }
  
-  set extraCurricularActivity(newValue:boolean) { 
-    this.isActive = newValue ? 1 : 0;
-    alert(this.isActive);
+  set value(val:boolean) { 
+    this.isChecked = val ? true : false;
   }
 
-  set setExtraCurricularActivity(id){
-    alert(id);
-  }*/ 
+  setState(val:number, idx:number){
+    if(this.isExBoolChecked[idx]){
+      this.isExBoolChecked[idx] = false;
+    }else{
+      this.isExBoolChecked[idx] = true;
+    }
+    //this.Students.extra_curricular_activity[idx].id = val;
+
+    
+    console.log(this.isExBoolChecked[idx]);
+  }
+
+  isExChecked(val:number, idx:number){
+    //console.log(val + " >> " + idx);
+    //console.log( " in >> " + this.Students.extra_curricular_activity.map(x => x.id).indexOf(val) );
+    //return this.Students.extra_curricular_activity[idx].id == 0 || this.Students.extra_curricular_activity[idx].id == undefined ? false : true;
+    this.isExBoolChecked[idx] = this.Students.extra_curricular_activity.map(x => x.id).indexOf(val) > -1? true : false;
+
+    if(this.isExBoolChecked[idx]){
+      //this.Students.extra_curricular_activity[idx] = {id:val, name:"--"};
+    }
+    return this.isExBoolChecked[idx];  
+  }
+
+  public setFlag(obj:IAccount, property: any, trueValue: any, falseValue: any): any {
+    if (obj === trueValue) {
+      obj[property] = falseValue;
+    } else {
+      obj[property] = trueValue;
+    }
+  }
 }
