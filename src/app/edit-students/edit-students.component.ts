@@ -23,12 +23,12 @@ export class EditStudentsComponent implements OnInit {
   classList:IKeyValue;
   houseColor:IKeyValue;
   defaultSchooolId = 2011040016;
-  schoolcitizenship: IKeyValue;
+  schoolcitizenship:IKeyValue;
   countrylist: {};
   statelist: {};
   classRoomLstId:Number;
   houseColorIdLst:Number;
-  isExBoolChecked:Array<boolean> = [];
+  validat:boolean = false;
 
   constructor(private formBuilder:FormBuilder, private http:HttpClient, private route: ActivatedRoute) { 
     /*this.formData = this.formBuilder.group({
@@ -81,6 +81,11 @@ export class EditStudentsComponent implements OnInit {
   }
 
   onSubmit(account) {
+    this.validat = this.validatControl();
+    if(!this.validat){
+      return;
+    }
+
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const url = AppGlobals.API_DOMAIN + '/accounts/' + account.acconut_id;
        
@@ -90,49 +95,76 @@ export class EditStudentsComponent implements OnInit {
     });
   }
 
+  validatControl() {
+
+    console.log((this.Students.housecolor.id == 0) + " <> " + (this.Students.classroom.class_room_id>0));
+
+    if(this.Students.housecolor.id == 0){
+      return false;
+    }
+
+    if(this.Students.classroom.class_room_id==0)
+    {
+      return false;
+    }
+
+    /*if(this.Students.country_id == 0){
+      return false;
+    }
+
+    if(this.Students.parish_id == 0)
+    {
+      return false;
+    }*/
+    
+    return true;
+  }
+
+  /*Set State list*/
   getStateList(idx){
     this.statelist = this.countrylist[idx].countrystate;
   }
-
-  isChecked:boolean = false;
- 
-  get value() {
-    return this.isChecked;
+  /*Get bool*/
+  getExtracurricularState(obj:any){
+    let val = this.Students.extra_curricular_activity.map(x => x.id).indexOf(obj.id);
+    return val>=0 ? true: false;
   }
- 
-  set value(val:boolean) { 
-    this.isChecked = val ? true : false;
-  }
-
-  setState(val:number, idx:number){
-    if(this.isExBoolChecked[idx]){
-      this.isExBoolChecked[idx] = false;
+  /*setExtracurricular state*/
+  setExtracurricular(state:boolean, obj:any, idx:number){
+    if(state){
+      this.Students.extra_curricular_activity.push(obj);
     }else{
-      this.isExBoolChecked[idx] = true;
-    }
-    //this.Students.extra_curricular_activity[idx].id = val;
-
-    
-    console.log(this.isExBoolChecked[idx]);
-  }
-
-  isExChecked(val:number, idx:number){
-    //console.log(val + " >> " + idx);
-    //console.log( " in >> " + this.Students.extra_curricular_activity.map(x => x.id).indexOf(val) );
-    //return this.Students.extra_curricular_activity[idx].id == 0 || this.Students.extra_curricular_activity[idx].id == undefined ? false : true;
-    this.isExBoolChecked[idx] = this.Students.extra_curricular_activity.map(x => x.id).indexOf(val) > -1? true : false;
-
-    if(this.isExBoolChecked[idx]){
-      //this.Students.extra_curricular_activity[idx] = {id:val, name:"--"};
-    }
-    return this.isExBoolChecked[idx];  
-  }
-
-  public setFlag(obj:IAccount, property: any, trueValue: any, falseValue: any): any {
-    if (obj === trueValue) {
-      obj[property] = falseValue;
-    } else {
-      obj[property] = trueValue;
+      let key = this.Students.extra_curricular_activity.map(x => x.id).indexOf(obj.id);
+      this.Students.extra_curricular_activity.splice(key,1);
     }
   }
+  /*Get bool*/
+  getResponsibilitiesState(obj:any){
+    let val = this.Students.responsibilities.map(x => x.id).indexOf(obj.id);
+    return val>=0 ? true: false;
+  }
+  /*setResponsibilities state*/
+  setResponsibilities(state:boolean, obj:any, idx:number){
+    if(state){
+      this.Students.responsibilities.push(obj);
+    }else{
+      let key = this.Students.responsibilities.map(x => x.id).indexOf(obj.id);
+      this.Students.responsibilities.splice(key,1);
+    }
+  }
+  /*Get bool*/
+  getSchoolCitizenshipState(obj:any){
+    let val = this.Students.citizenship.map(x => x.id).indexOf(obj.id);
+    return val>=0 ? true: false;
+  }
+  /*setResponsibilities state*/
+  setSchoolCitizenship(state:boolean, obj:any, idx:number){
+    if(state){
+      this.Students.citizenship.push(obj);
+    }else{
+      let key = this.Students.citizenship.map(x => x.id).indexOf(obj.id);
+      this.Students.citizenship.splice(key,1);
+    }
+  }
+  
 }

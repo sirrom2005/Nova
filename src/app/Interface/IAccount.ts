@@ -20,8 +20,7 @@ export interface IAccount
     classroom:{class_room_id:number},
     qualification:{},
     housecolor:{id:number},
-    extra_curricular_activity: [{id:number, name:string}],
-    responsibilities: [],
-    citizenship: []
+    extra_curricular_activity:[{id:number, name:string}],
+    responsibilities:[{id:number, name:string}],
+    citizenship:[{id:number, name:string}]
 };
-

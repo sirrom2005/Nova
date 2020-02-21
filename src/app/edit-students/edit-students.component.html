@@ -81,23 +81,25 @@
             </div>
             <div class="form-group">
                 Extracurricular Activity<br>
-                <div class="form-check" *ngFor="let val of extraCurricular; let i = index">
+                <div class="form-check" *ngFor="let extObj of extraCurricular; let i = index">
                     <label class="form-check-label">
                         <input type="checkbox" 
-                        [checked]="isExChecked(val.id, i)" 
-                        (change)="$event.target.checked? (Students.extra_curricular_activity[i] = {id:val.id,name:val.name}) : (Students.extra_curricular_activity[i] = null)"
-                        class="form-check-input" name="id" value="{{val.id}}" >
-                        {{val.name}} >> 
+                        [checked]="getExtracurricularState(extObj)" 
+                        (change)="setExtracurricular($event.target.checked, extObj, i)"
+                        class="form-check-input" value="{{extObj.id}}" >
+                        {{extObj.name}}
                     </label>
                 </div>
-                <pre>{{ Students.extra_curricular_activity | json}}</pre>
             </div>
             <div class="form-group">
                 Responsibilities<br>
-                <div class="form-check" *ngFor="let res of responsibilities">
+                <div class="form-check" *ngFor="let resObj of responsibilities">
                     <label class="form-check-label" >
-                        <input type="checkbox" class="form-check-input" value="{{res.id}}" >
-                        {{res.name}}
+                        <input type="checkbox" 
+                        [checked]="getResponsibilitiesState(resObj)" 
+                        (change)="setResponsibilities($event.target.checked, resObj, i)"
+                        class="form-check-input" value="{{resObj.id}}" >
+                        {{resObj.name}}
                     </label>
                 </div>
             </div>  
@@ -111,10 +113,13 @@
             </div>
             <div class="form-group">
                 School Citizenship<br>
-                <div class="form-check" *ngFor="let cit of schoolcitizenship">
+                <div class="form-check" *ngFor="let citObj of schoolcitizenship">
                     <label class="form-check-label" >
-                        <input type="checkbox" class="form-check-input" value="{{cit.id}}" >
-                        {{cit.name}}
+                        <input type="checkbox" 
+                        [checked]="getSchoolCitizenshipState(citObj)" 
+                        (change)="setSchoolCitizenship($event.target.checked, citObj, i)"
+                        class="form-check-input" value="{{citObj.id}}" >
+                        {{citObj.name}}
                     </label>
                 </div>
             </div>  
