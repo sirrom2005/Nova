@@ -1,1 +1,123 @@
-<p>view-student works!</p>
+<!-- Modal -->
+<div class="modal fade" id="meritModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Merit</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form class="modal-body">
+            <div class="form-group">
+                <select class="form-control" >
+                    <option>---</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <textarea class="form-control" name="comment" id="comment"></textarea>
+            </div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!--pre>{{Student | json}}</pre-->
+<div class="row">
+    <div class="col-md-12 text-right mb-3">
+        <!--button class="btn btn-success ml-2">Merits</button>
+        <button class="btn btn-danger ml-2">Disiplinary Actions</button-->
+        <a href="edit-student/{{Student.acconut_id}}" class="btn btn-warning ml-2">Edit</a>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Info</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div><label><b>Firstname:</b> {{Student.firstname}}</label></div>
+                        <div><label><b>Middle Name:</b> {{Student.middlename}}</label></div>
+                        <div><label><b>Lastname:</b> {{Student.lastname}}</label></div>
+                        <div><label><b>Gender:</b> {{Student.gender}}</label></div>
+                        <div><label><b>Email:</b> {{Student.email}}</label></div>
+                        <div><label><b>Date of Birth:</b> {{Student.dob}}</label></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Contact Information</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div>{{Student.street}}</div>
+                        <div>{{Student.city_town}}</div>
+                        <div>{{Student.zip_code}}</div>
+                        <div>{{Student.parish_id}}</div>
+                        <div>{{Student.country_id}}</div>
+                        <div><b>Mobile Phone:</b> {{Student.phone_mobile}}</div>
+                        <div><label><b>Home Phone:</b> {{Student.phone_home}}</label></div>                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">School Information</h6>
+            </div>
+            <div class="card-body">
+                <div><b>School :</b> {{Student.accountschool.school_id}}</div> 
+                <div><b>Class Room :</b> {{Student.classroom.name}}</div>
+                <div><b>Enrollment Date :</b> {{Student.enrollment_date}}</div>
+                <div><b>Account Type :</b> {{Student.account_type}}</div>
+                <div><b>House Color :</b> {{Student.housecolor.name}}</div>
+                <p></p>
+                <ul class="list-group" *ngIf="Student.extra_curricular_activity.length > 0" >
+                    <li class="list-group-item"><b>Extra Curricular Activity</b></li>
+                    <li *ngFor="let exObj of Student.extra_curricular_activity" class="list-group-item">{{exObj.name}}</li>
+                </ul>
+                <p></p>
+                <ul class="list-group" *ngIf="Student.responsibilities.length > 0" >
+                    <li class="list-group-item"><b>Responsibilities</b></li>
+                    <li *ngFor="let resObj of Student.responsibilities" class="list-group-item">{{resObj.name}}</li>
+                </ul>
+                <p></p>
+                <ul class="list-group" *ngIf="Student.citizenship.length > 0" >
+                    <li class="list-group-item"><b>School Citizenship</b></li>
+                    <li *ngFor="let citObj of Student.citizenship" class="list-group-item">{{citObj.name}}</li>
+                </ul>
+            </div>
+        </div>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <a href="#" class="float-right" data-toggle="modal" data-target="#meritModal"><span class="glyphicon glyphicon-plus">+</span></a>
+                <h6 class="m-0 font-weight-bold text-primary">Merits</h6>
+            </div>
+            <div class="card-body">              
+                --- 
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <a href="#" class="float-right" data-toggle="modal" data-target="#meritModal"><span class="glyphicon glyphicon-plus">+</span></a>
+                <h6 class="m-0 font-weight-bold text-primary">Disiplinary Actions</h6>
+            </div>
+            <div class="card-body">
+                --- 
+            </div>
+        </div>
+    </div>
+</div>

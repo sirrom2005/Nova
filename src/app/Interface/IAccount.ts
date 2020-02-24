@@ -17,7 +17,7 @@ export interface IAccount
     enrollment_date:string,
     account_type:number,
     accountschool:{school_id:number},
-    classroom:{class_room_id:number},
+    classroom:{id:number, name:string},
     qualification:{},
     housecolor:{id:number},
     extra_curricular_activity:[{id:number, name:string}],

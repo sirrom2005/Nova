@@ -95,15 +95,15 @@ export class EditStudentsComponent implements OnInit {
     });
   }
 
-  validatControl() {
-
-    console.log((this.Students.housecolor.id == 0) + " <> " + (this.Students.classroom.class_room_id>0));
+  validatControl() 
+  {
+    console.log((this.Students.housecolor.id == 0) + " <> " + (this.Students.classroom.id>0));
 
     if(this.Students.housecolor.id == 0){
       return false;
     }
 
-    if(this.Students.classroom.class_room_id==0)
+    if(this.Students.classroom.id==0)
     {
       return false;
     }
