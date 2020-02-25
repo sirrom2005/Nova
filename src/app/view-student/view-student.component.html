@@ -3,7 +3,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Add Merit</h5>
+          <h5 class="modal-title" id="exampleModalLabel">{{ActionTitle}}</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -26,7 +26,7 @@
     </div>
   </div>
 
-<!--pre>{{Student | json}}</pre-->
+<pre>{{BehaviorList | json}}</pre>
 <div class="row">
     <div class="col-md-12 text-right mb-3">
         <!--button class="btn btn-success ml-2">Merits</button>
@@ -102,22 +102,24 @@
         </div>
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <a href="#" class="float-right" data-toggle="modal" data-target="#meritModal"><span class="glyphicon glyphicon-plus">+</span></a>
+                <a href="#" class="float-right" data-toggle="modal" (click)="studentAction(3)" data-target="#meritModal"><span class="glyphicon glyphicon-plus">+</span></a>
                 <h6 class="m-0 font-weight-bold text-primary">Merits</h6>
             </div>
-            <div class="card-body">              
-                --- 
+            <div class="card-body" *ngFor="let m of MeritList" >              
+               {{m.conduct.name}}<br>
+               {{m.comments}}
             </div>
         </div>
 
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <a href="#" class="float-right" data-toggle="modal" data-target="#meritModal"><span class="glyphicon glyphicon-plus">+</span></a>
+                <a href="#" class="float-right" data-toggle="modal" (click)="studentAction(2)" data-target="#meritModal"><span class="glyphicon glyphicon-plus">+</span></a>
                 <h6 class="m-0 font-weight-bold text-primary">Disiplinary Actions</h6>
             </div>
-            <div class="card-body">
-                --- 
-            </div>
+            <div class="card-body" *ngFor="let m of DisiplinaryList" >              
+                {{m.conduct.name}}<br>
+                {{m.comments}}
+             </div>
         </div>
     </div>
 </div>
