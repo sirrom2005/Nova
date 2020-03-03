@@ -49,4 +49,5 @@
   $(document).ready( function () {
     //$('#table_id').DataTable();
   });
+
 })(jQuery); // End of use strict

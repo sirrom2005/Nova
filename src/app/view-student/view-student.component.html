@@ -16,14 +16,37 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <textarea class="form-control" formControlName="comments" id="comments"></textarea>
+                    <textarea class="form-control" formControlName="comments" id="comments" placeholder="Enter comments for student..."></textarea>
                 </div>
+                <div class="alert alert-danger" role="alert" *ngIf="sysError" >System error, please contact the system admin</div>
+                <div class="alert alert-warning" role="alert" *ngIf="submitted && formData.controls.comments.errors" >Comment Missing</div>
+                <div class="alert alert-primary" role="alert" *ngIf="success" >Information added</div>
             </div>
             <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="submit" class="btn btn-primary" [disabled]="btnDisable">Save</button>
             </div>
         </form>
+      </div>
+    </div>
+</div>
+<!--Confirmation box-->
+<div class="modal fade bd-example-modal-sm" id="confirmbox" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Confirm</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            Are you sure you want to delete this item?
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button class="btn btn-danger" (click)="deleteBehavior()" data-dismiss="modal">Delete</button>
+        </div>
       </div>
     </div>
 </div>
@@ -103,23 +126,31 @@
         </div>
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <a href="#" class="float-right" data-toggle="modal" (click)="studentAction(3)" data-target="#meritModal"><span class="glyphicon glyphicon-plus">+</span></a>
+                <a href="#" class="float-right" data-toggle="modal" (click)="studentAction(3)" data-target="#meritModal"><i class="fas fa-plus"></i></a>
                 <h6 class="m-0 font-weight-bold text-primary">Merits</h6>
             </div>
-            <div class="card-body" *ngFor="let m of MeritList" >              
-               {{m.conduct.name}}<br>
-               {{m.comments}}
+            <div class="card-body">      
+                <div style="border-bottom: dashed 1px;" class="mb-1" *ngFor="let m of MeritList" >
+                    <b>{{m.conduct.name}}</b> <small class="float-right"><b>{{m.date_added | date}}</b></small><br>
+                    <div>{{m.comments}}</div>
+                    <a href="#" class="float-right" (click)="setDeletKey(m.id)" data-toggle="modal" data-target="#confirmbox" data-whatever="@mdo"><i class="far fa-trash-alt"></i></a>               
+                    <small><b>Teacher ID:</b> {{m.teacher_id}}</small>
+                </div>        
             </div>
         </div>
 
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <a href="#" class="float-right" data-toggle="modal" (click)="studentAction(2)" data-target="#meritModal"><span class="glyphicon glyphicon-plus">+</span></a>
+                <a href="#" class="float-right" data-toggle="modal" (click)="studentAction(2)" data-target="#meritModal"><i class="fas fa-plus"></i></a>
                 <h6 class="m-0 font-weight-bold text-primary">Disiplinary Actions</h6>
             </div>
-            <div class="card-body" *ngFor="let m of DisiplinaryList" >              
-                {{m.conduct.name}}<br>
-                {{m.comments}}
+            <div class="card-body">   
+                <div style="border-bottom: dashed 1px;" class="mb-1" *ngFor="let m of DisiplinaryList">        
+                    <b>{{m.conduct.name}}</b> <small class="float-right"><b>{{m.date_added | date}}</b></small><br>
+                    <div>{{m.comments}}</div>
+                    <a href="#" class="float-right" (click)="setDeletKey(m.id)" data-toggle="modal" data-target="#confirmbox" data-whatever="@mdo"><i class="far fa-trash-alt"></i></a>
+                    <small><b>Teacher ID:</b> {{m.teacher_id}}</small>
+                </div>   
              </div>
         </div>
     </div>

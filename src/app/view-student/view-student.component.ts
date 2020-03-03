@@ -8,6 +8,7 @@ import { IBehavior } from '../Interface/IBehavior';
 import { IKeyValue } from '../Interface/IValueKey';
 import { forkJoin } from 'rxjs';
 import { FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { isNumber } from 'util';
 
 @Component({
   selector: 'app-view-student',
@@ -20,6 +21,8 @@ export class ViewStudentComponent implements OnInit {
   submitted:boolean = false;
   success:boolean   = false;
   error:boolean     = false;
+  btnDisable:boolean= false;
+  sysError:boolean  = false;
 
   Studentid:string;
   Student:IAccount;
@@ -28,6 +31,7 @@ export class ViewStudentComponent implements OnInit {
   DisiplinaryList:Array<IBehavior>;
   Conduct:any;
   ConductOptLst:any;
+  body:IBehavior;
 
   constructor(private formBuilder:FormBuilder, private http:HttpClient, private route: ActivatedRoute) { 
       this.formData = this.formBuilder.group({
@@ -40,29 +44,42 @@ export class ViewStudentComponent implements OnInit {
   {
     this.route.paramMap.subscribe(params => { 
       this.Studentid = params.get('student_id'); 
-
       //Get Student Account
       let req1 = this.http.get<IAccount>(AppGlobals.API_DOMAIN + '/accounts/' + this.Studentid);
-      //Student behavior 
-      let req2 = this.http.get<any>(AppGlobals.API_DOMAIN + '/studentbehavior/student/' + this.Studentid);
       //conductList List
-      let req3 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/conductList');
-      forkJoin(req1, req2, req3).subscribe(
+      let req2 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/conductList');
+      forkJoin(req1, req2).subscribe(
         json => 
               {
-                this.Student          = json[0];
-                this.DisiplinaryList  = json[1].filter(x => x.conduct.type_id == 2);
-                this.MeritList        = json[1].filter(x => x.conduct.type_id == 3);
-                this.Conduct          = json[2];
+                this.Student  = json[0];
+                this.Conduct  = json[1];
               }     
       );
     });
+
+
+    this.fetchStudentbehavior();
+  }
+
+  fetchStudentbehavior() {
+      //Student behavior 
+      this.http.get<any>(AppGlobals.API_DOMAIN + '/studentbehavior/student/' + this.Studentid)
+      .subscribe(data => {
+        this.DisiplinaryList  = data.filter(x => x.conduct.type_id == 2);
+        this.MeritList        = data.filter(x => x.conduct.type_id == 3);
+      });
   }
 
   studentAction(key:number){
-    this.ActionTitle = (key==3) ? "Add Merit" : "Disiplinary Actions";
+    this.submitted = false;
+    this.success   = false;
+    this.error     = false;
+    this.btnDisable= false;
+    this.sysError  = false;
+
+    this.ActionTitle = (key==3) ? "Add Merit" : "Add Disiplinary Actions";
     this.ConductOptLst = this.Conduct.filter(x => x.type_id == key);
-    //set dropdown list default value
+    //set dropdown list default value, 0 index value
     this.formData.controls.conduct_id.setValue(this.ConductOptLst[0].id);
     this.formData.controls.comments.setValue("");
   }
@@ -71,22 +88,54 @@ export class ViewStudentComponent implements OnInit {
   {
     this.submitted = true;
 
-    const body = {
-      conduct_id:   this.formData.controls.conduct_id.value,
-      comments:     this.formData.controls.comments.value,
-      student_id:   this.Student.acconut_id,
-      class_id:     this.Student.classroom.id,
-      teacher_id:   5555
-    };
-
-    console.log(body);
-
     if(this.formData.invalid){
-      console.log("Errorr");
       this.error = true;
       return;
     }
-    console.log(">>>>");
+
+    const body = {
+      teacher_id: 1047025,
+      comments:   this.formData.controls.comments.value,
+      student_id: this.Student.acconut_id,
+      class_room: {id:this.Student.classroom.id},
+      conduct:    {id: this.formData.controls.conduct_id.value}
+    };
+
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const options:any = {headers, responseType:"json"};
+    const url = AppGlobals.API_DOMAIN + '/studentbehavior';
+       
+    this.btnDisable = true;
+    this.http.post<number>(url, body, options)
+    .subscribe(
+      data => {
+        this.success = true;
+        this.fetchStudentbehavior();
+      },
+      error => {
+        this.sysError = true;
+        this.btnDisable = false;
+        console.log( error )
+      }
+    );
   }
 
+  deleteKey:number;
+  setDeletKey(id:number){
+    this.deleteKey = id;
+  }
+
+  deleteBehavior(){
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const options:any = {headers, responseType:"json"};
+    const url = AppGlobals.API_DOMAIN + '/studentbehavior/' + this.deleteKey;
+       
+    this.http.delete(url, options).subscribe(
+      data => {
+        this.DisiplinaryList = this.DisiplinaryList.filter(x => x.id != this.deleteKey);
+        this.MeritList = this.MeritList.filter(x => x.id != this.deleteKey);
+        console.log(data)
+      }
+    );
+  }
 }
