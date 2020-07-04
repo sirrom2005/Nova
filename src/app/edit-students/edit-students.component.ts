@@ -87,9 +87,10 @@ export class EditStudentsComponent implements OnInit {
     }
 
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const options:any = {headers, responseType:"json"};
     const url = AppGlobals.API_DOMAIN + '/accounts/' + account.acconut_id;
        
-    this.http.put(url, account, {headers, responseType:"json"})
+    this.http.put(url, account, options)
     .subscribe(data => {
       console.log(data);
     });
