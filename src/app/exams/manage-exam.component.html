@@ -1,0 +1,169 @@
+<!-- Modal -->
+<div class="modal fade" id="addquestion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Build Multiple Choice Question</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form [formGroup]="formData" (ngSubmit)="AddQuestionPost()" >
+            <div class="modal-body">
+                <b>The Question</b>
+                <textarea class="form-control {{formErrorSytle.question}} mb-2" formControlName="question" id="question" type="text" placeholder="Enter question"></textarea>
+                <b>Enter Answers And Select The Correct Choice</b>
+                <div class="input-group mb-2">
+                    <input class="form-control form-control-sm {{formErrorSytle.answer_text1}}" formControlName="answer_text1" type="text" placeholder="Answer number one" >
+                    <div class="input-group-append">
+                        <label class="input-group-text" for="answer1">
+                            <input type="radio" formControlName="answer" value="1" id="answer1" />
+                        </label>
+                    </div>
+                </div>
+                <div class="input-group mb-2">
+                    <input class="form-control form-control-sm {{formErrorSytle.answer_text2}}" formControlName="answer_text2" type="text" placeholder="Answer number two" >
+                    <div class="input-group-append">
+                        <label class="input-group-text" for="answer2">
+                            <input type="radio" formControlName="answer" value="2" id="answer2" />
+                        </label>
+                    </div>
+                </div>
+                <div class="input-group mb-2">
+                    <input class="form-control form-control-sm" formControlName="answer_text3" type="text" placeholder="Optional" >
+                    <div class="input-group-append">
+                        <label class="input-group-text" for="answer3">
+                            <input type="radio" formControlName="answer" value="3" id="answer3" />
+                        </label>
+                    </div>
+                </div>
+                <div class="input-group mb-2">
+                    <input class="form-control form-control-sm" formControlName="answer_text4" type="text" placeholder="Optional" >
+                    <div class="input-group-append">
+                        <label class="input-group-text" for="answer4">
+                            <input type="radio" formControlName="answer" value="4" id="answer4" />
+                        </label>
+                    </div>
+                </div>
+                <div class="input-group mb-2">
+                    <input class="form-control form-control-sm" formControlName="answer_text5" type="text" placeholder="Optional" >
+                    <div class="input-group-append">
+                        <label class="input-group-text" for="answer5">
+                            <input type="radio" formControlName="answer" value="5" id="answer5" />
+                        </label>
+                    </div>
+                </div>
+                <div class="input-group mb-2">
+                    <input class="form-control form-control-sm" formControlName="answer_text6" type="text" placeholder="Optional" >
+                    <div class="input-group-append">
+                        <label class="input-group-text" for="answer6">
+                            <input type="radio" formControlName="answer" value="6" id="answer6" />
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Create Exams</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div *ngIf="exam">
+                            <ul class="list-group mb-4" *ngFor="let val of exam.exam_body; index as i">
+                                <li class="list-group-item list-group-item-secondary">
+                                    <span class="float-right">
+                                        <a (click)=LoadEdit(i) data-toggle="modal" data-target="#addquestion"><i class="far fa-edit text-primary"></i></a>&nbsp;
+                                        <a (click)=Delete(i)  ><i class="fas fa-trash-alt text-danger"></i></a>
+                                    </span>
+                                    {{i+1}}) {{val.question}}
+                                </li>
+                                <li class="list-group-item align-items-center d-flex justify-content-between align-items-center">
+                                    {{val.answer_text1}}
+                                    <i *ngIf="exam.exam_answer[i].answer==1" class="fas fa-check text-primary"></i>
+                                </li>
+                                <li class="list-group-item align-items-center d-flex justify-content-between align-items-center">
+                                    {{val.answer_text2}}
+                                    <i *ngIf="exam.exam_answer[i].answer==2" class="fas fa-check text-primary"></i>
+                                </li>
+                                <li *ngIf="val.answer_text3" class="list-group-item align-items-center d-flex justify-content-between align-items-center">
+                                    {{val.answer_text3}}
+                                    <i *ngIf="exam.exam_answer[i].answer==3" class="fas fa-check text-primary"></i>
+                                </li>
+                                <li *ngIf="val.answer_text4" class="list-group-item align-items-center d-flex justify-content-between align-items-center">
+                                    {{val.answer_text4}}
+                                    <i *ngIf="exam.exam_answer[i].answer==4" class="fas fa-check text-primary"></i>
+                                </li>
+                                <li *ngIf="val.answer_text4" class="list-group-item align-items-center d-flex justify-content-between align-items-center">
+                                    {{val.answer_text4}}
+                                    <i *ngIf="exam.exam_answer[i].answer==5" class="fas fa-check text-primary"></i>
+                                </li>
+                                <li *ngIf="val.answer_text4" class="list-group-item align-items-center d-flex justify-content-between align-items-center">
+                                    {{val.answer_text4}}
+                                    <i *ngIf="exam.exam_answer[i].answer==6" class="fas fa-check text-primary"></i>
+                                </li>
+                            </ul>
+                        </div> 
+                    </div>  
+                    <div class="col-mb-4">
+                        <form (ngSubmit)="Save()" *ngIf="exam" >
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Exam identifier</label>
+                                <input class="form-control {{formErrorSytle.name}}" type="text" placeholder="Enter identifier title" [(ngModel)]="exam.name" name="name" />
+                            </div>
+                            <div class="form-group">
+                                <label>Exam Type</label>
+                                <select class="form-control {{formErrorSytle.exam_type}}"  [(ngModel)]="exam.exam_type.id" name="exam_type" >
+                                    <option *ngFor="let examType of examinationTypeList"  value="{{examType.id}}" >{{examType.name}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Exam Duration (minutes)</label>
+                                <select class="form-control {{formErrorSytle.duration}}" [(ngModel)]="exam.duration.id" name="duration">
+                                    <option *ngFor="let duration of durationList"  value="{{duration.id}}" >{{duration.name}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Exam Subject</label>
+                                <select class="form-control {{formErrorSytle.subject}}" [(ngModel)]="exam.subject.id" name="subject">
+                                    <option *ngFor="let sub of subjectList"  value="{{sub.id}}" >{{sub.name}}</option>
+                                </select>
+                            </div>
+
+                            <div class="form-check form-group">
+                                <input class="form-check-input" type="checkbox" id="allow_retry" [(ngModel)]="exam.allow_retry" name="allow_retry" />
+                                <label class="form-check-label" for="allow_retry">Allow Retry</label>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <a href="#" (click)=AddNew() class="btn btn-secondary btn-block" data-toggle="modal" data-target="#addquestion">Add Question</a>
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-primary btn-block" [disabled]="btnDisable">Save</button>
+                                </div>   
+                            </div>    
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <button type="button" onclick="alert('This feature is coming soon\ntoo lazy to do it now\nSign: Management');" class="btn btn-danger btn-block" [disabled]="btnDisable">Delete This Examination</button>
+                                </div>
+                            </div>                   
+                        </form> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

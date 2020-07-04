@@ -10,6 +10,8 @@ import { EditStudentsComponent } from './edit-students/edit-students.component';
 import { ViewStudentComponent } from './view-student/view-student.component';
 import { SidemenuComponent } from './sidemenu/sidemenu.component';
 import { ViewSchoolComponent } from './view-school/view-school.component';
+import { ExamsComponent } from './exams/exams.component';
+import { ManageExamComponent } from './exams/manage-exam.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { ViewSchoolComponent } from './view-school/view-school.component';
     EditStudentsComponent,
     ViewStudentComponent,
     SidemenuComponent,
-    ViewSchoolComponent
+    ViewSchoolComponent,
+    ExamsComponent,
+    ManageExamComponent
   ],
   imports: [
     BrowserModule,
