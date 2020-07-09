@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AppGlobals } from '../common/app-globals';
+import { environment } from '../../environments/environment'
 import { ISchool } from "../Interface/ISchool";
 
 @Component({
@@ -15,7 +15,7 @@ export class ViewSchoolComponent implements OnInit {
   constructor(private http:HttpClient) { }
 
   ngOnInit() {
-    this.http.get<ISchool>(AppGlobals.API_DOMAIN + '/schools/1201103719').
+    this.http.get<ISchool>(environment.API_DOMAIN + '/schools/1201103719').
     subscribe(data => {
       this.School = data;
     });

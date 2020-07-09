@@ -19,5 +19,7 @@ export interface ISchool{
     enable:String,
     show_on_site:String,
     date_added:String,
-    subject_list:Array<ISubject>
+    subject_list:Array<ISubject>,
+    state:{id:number, name:string},
+    country:{id:number, name:string}
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AppGlobals } from '../common/app-globals'
+import { environment } from '../../environments/environment'
 
 @Component({
   selector: 'app-sidemenu',
@@ -8,7 +8,7 @@ import { AppGlobals } from '../common/app-globals'
 })
 export class SidemenuComponent implements OnInit 
 {
-  readonly DefaultClass = encodeURIComponent(btoa(AppGlobals.FormClass[0]));
+  readonly DefaultClass = encodeURIComponent(btoa("7/A"));
 
   constructor() { }
 

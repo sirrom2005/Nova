@@ -13,6 +13,6 @@ export interface IExam{
     notes:string,
     subject: {id:number, name: string },
     created_by:number,
-    date_added:string,
-    date_updated:string
+    exam_date:string,
+    exam_expire_date:string
 };

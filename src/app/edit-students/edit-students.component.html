@@ -93,7 +93,7 @@
             </div>
             <div class="form-group">
                 Responsibilities
-                <div class="form-check" *ngFor="let resObj of responsibilities">
+                <div class="form-check" *ngFor="let resObj of responsibilities; let i = index">
                     <label class="form-check-label" >
                         <input type="checkbox" 
                         [checked]="getResponsibilitiesState(resObj)" 
@@ -113,7 +113,7 @@
             </div>
             <div class="form-group">
                 School Citizenship
-                <div class="form-check" *ngFor="let citObj of schoolcitizenship">
+                <div class="form-check" *ngFor="let citObj of schoolcitizenship; let i = index">
                     <label class="form-check-label" >
                         <input type="checkbox" 
                         [checked]="getSchoolCitizenshipState(citObj)" 

@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { AppGlobals } from '../common/app-globals';
+import { environment } from '../../environments/environment'
 import { IClassLinks } from '../Interface/IClassLinks';
 import { IStudent } from "../Interface/IStudent";
 
@@ -13,7 +13,7 @@ import { IStudent } from "../Interface/IStudent";
 })
 
 export class StudentsComponent implements OnInit {
-
+  FormClass:Array<string> = ["7/A","7/B"];
   ClassLinks:Array<IClassLinks> = [];
   Students:any;
   StudentList:IStudent;
@@ -30,13 +30,13 @@ export class StudentsComponent implements OnInit {
       }
     });
 
-    this.http.get<IStudent>(AppGlobals.API_DOMAIN + '/students/').
+    this.http.get<IStudent>(environment.API_DOMAIN + '/students/').
     subscribe(data => {
       this.Students = data;
       this.showClassList(this.classLink);
     });
 
-    AppGlobals.FormClass.forEach(x => this.ClassLinks.push({text:x, link:btoa(x)}))
+    this.FormClass.forEach(x => this.ClassLinks.push({text:x, link:btoa(x)}))
   }
 
   showClassList(key:String){

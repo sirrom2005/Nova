@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AppGlobals } from '../common/app-globals';
+import { environment } from '../../environments/environment'
 import { ExamQuestion } from '../Interface/ExamQuestion';
 import { ExamAnswer } from '../Interface/ExamAnswer';
 import { FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -10,11 +10,14 @@ import { forkJoin } from 'rxjs';
 import { IKeyValue } from '../Interface/IValueKey';
 import { IExam } from '../Interface/IExam';
 
+declare function closeModal():any;
+
 @Component({
   selector: 'app-manage-exam',
   templateUrl: './manage-exam.component.html',
   styleUrls: ['./manage-exam.component.scss']
 })
+
 export class ManageExamComponent implements OnInit
 {
   submitted:boolean = false;
@@ -35,9 +38,10 @@ export class ManageExamComponent implements OnInit
                       answer_text4: "",
                       answer_text5: "",
                       answer_text6: "",
+                      exam_date: "",
+                      exam_expire_date: ""
                     };
   formData:FormGroup;
-  formDataSubmit:FormGroup;
   exam:IExam;
   answerBodyJson:Array<any> = []; 
   examBodyJson:Array<any> = []; 
@@ -47,7 +51,7 @@ export class ManageExamComponent implements OnInit
   editId: number;
   btnDisable:boolean = false;
 
-  constructor(private formBuilder:FormBuilder, private formBuilderSubmit:FormBuilder, private http:HttpClient, private route: ActivatedRoute, private router: Router){
+  constructor(private formBuilder:FormBuilder, private http:HttpClient, private route: ActivatedRoute, private router: Router){
     this.formData = this.formBuilder.group({
       question:     ['', Validators.required],
       answer_text1: ['', Validators.required],
@@ -58,14 +62,6 @@ export class ManageExamComponent implements OnInit
       answer_text6: [''],
       answer: ['', Validators.required]
     });
-
-    /*this.formDataSubmit = this.formBuilderSubmit.group({
-      exam_type: ['', Validators.required],
-      duration: ['', Validators.required],
-      subject: ['', Validators.required],
-      allow_retry: [''],
-      name: ['']
-    });*/
   }
 
   ngOnInit(): void {
@@ -81,15 +77,15 @@ export class ManageExamComponent implements OnInit
       notes:"",
       subject: {id:0, name:""},
       created_by:0,
-      date_added:"",
-      date_updated:""
+      exam_date:"",
+      exam_expire_date:""
     };
 
     this.route.paramMap.subscribe(params => { 
-      
-      let req1 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/subjectList');
-      let req2 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/examinationTypeList');
-      let req3 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/durationList');
+      console.log("Environment >>" + environment.API_DOMAIN);
+      let req1 = this.http.get<IKeyValue>(environment.API_DOMAIN + '/valuekey/subjectList');
+      let req2 = this.http.get<IKeyValue>(environment.API_DOMAIN + '/valuekey/examinationTypeList');
+      let req3 = this.http.get<IKeyValue>(environment.API_DOMAIN + '/valuekey/durationList');
       
       forkJoin(req1, req2, req3).subscribe(
         json => 
@@ -100,7 +96,7 @@ export class ManageExamComponent implements OnInit
 
                 this.pageId = parseInt(params.get('id'));
                 if(this.pageId!=0){
-                  this.http.get<any>(AppGlobals.API_DOMAIN + '/examination/' + this.pageId).
+                  this.http.get<any>(environment.API_DOMAIN + '/examination/' + this.pageId).
                   subscribe(
                     data => { 
                       this.formatData(data);
@@ -117,17 +113,15 @@ export class ManageExamComponent implements OnInit
 
     //examQuestion
     let jsonStr = atob(data.exam_body);
-    let jsonObj:any = JSON.parse(jsonStr);
-    let examQuestion:ExamQuestion = <ExamQuestion>jsonObj;
+    let jsonObj:Array<ExamQuestion> = JSON.parse(jsonStr);
+    let examQuestion:Array<ExamQuestion> = <ExamQuestion[]>jsonObj;
     this.exam.exam_body = examQuestion;
     
     //examAnswer
     let jsonAnswerStr = atob(data.exam_answer);
-    let jsonObjAnswer:any = JSON.parse(jsonAnswerStr);
-    let examAnswer:ExamAnswer = <ExamAnswer>jsonObjAnswer;
+    let jsonObjAnswer:Array<ExamAnswer> = JSON.parse(jsonAnswerStr);
+    let examAnswer:Array<ExamAnswer> = <ExamAnswer[]>jsonObjAnswer;
     this.exam.exam_answer = examAnswer;
-
-    console.log(this.exam);
   }
 
   AddQuestionPost()
@@ -145,7 +139,9 @@ export class ManageExamComponent implements OnInit
       answer_text3: this.formData.controls.answer_text3.value,
       answer_text4: this.formData.controls.answer_text4.value,
       answer_text5: this.formData.controls.answer_text5.value,
-      answer_text6: this.formData.controls.answer_text6.value
+      answer_text6: this.formData.controls.answer_text6.value,
+      exam_date: this.formData.controls.exam_date.value,
+      exam_expire_date: this.formData.controls.exam_expire_date.value
     };
 
     const answer = {timeStamp: timeStamp, answer: this.formData.controls.answer.value };
@@ -153,6 +149,8 @@ export class ManageExamComponent implements OnInit
     this.formErrorSytle.question     = (body.question==null     || body.question.trim()==""    ) ? "is-invalid" : "" ;
     this.formErrorSytle.answer_text1 = (body.answer_text1==null || body.answer_text1.trim()=="") ? "is-invalid" : "" ;
     this.formErrorSytle.answer_text2 = (body.answer_text2==null || body.answer_text2.trim()=="") ? "is-invalid" : "" ;
+    this.formErrorSytle.exam_date    = (body.exam_date==null || body.exam_date.trim()=="") ? "is-invalid" : "" ;
+    this.formErrorSytle.exam_expire_date = (body.exam_expire_date==null || body.exam_expire_date.trim()=="") ? "is-invalid" : "" ;
 
     if(this.formData.invalid){
       console.log("Errorr");
@@ -171,16 +169,12 @@ export class ManageExamComponent implements OnInit
       this.exam.exam_body[this.editId].answer_text6 = this.formData.controls.answer_text6.value;
       this.exam.exam_answer[this.editId].answer     = this.formData.controls.answer.value;
       this.formData.reset();
-      //ignore the error line below it work for now.
-      $("#addquestion").modal('hide');
+      closeModal();
     }else{ 
       this.exam.exam_body.push(body);
       this.exam.exam_answer.push(answer);
       this.formData.reset();
     }
-
-    console.log("AddQuestionPost>>>");
-    console.log(this.exam);
   }
 
   Save()
@@ -207,11 +201,11 @@ export class ManageExamComponent implements OnInit
       allow_retry : (this.exam.allow_retry)? 1 : 0,
       description : "",
       notes       : "",
-      date_added  : "2020-01-01 00:00:00",
-      date_updated: "2020-01-01 00:00:00"
+      exam_date   : this.exam.exam_date,
+      exam_expire_date:this.exam.exam_expire_date
     };
 
-    var url = AppGlobals.API_DOMAIN + '/examination/';
+    var url = environment.API_DOMAIN + '/examination/';
     this.http.post<any>(url, body, {headers, responseType:"json"})
     .subscribe(post => {
       if(post.name.trim()!=""){

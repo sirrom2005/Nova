@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-
+import { environment } from '../../environments/environment'
 import { IAccount } from "../Interface/IAccount";
-import { AppGlobals } from "../common/app-globals";
 import { IKeyValue } from '../Interface/IValueKey';
 import { forkJoin } from 'rxjs';
 
@@ -44,17 +43,17 @@ export class EditStudentsComponent implements OnInit {
 
   ngOnInit() {
     //House Color List
-    let req1 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + `/valuekey/housecolor/${this.defaultSchooolId}`);
+    let req1 = this.http.get<IKeyValue>(environment.API_DOMAIN + `/valuekey/housecolor/${this.defaultSchooolId}`);
     //Extra Curricular Activity List
-    let req2 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/extracurricularactivity');
+    let req2 = this.http.get<IKeyValue>(environment.API_DOMAIN + '/valuekey/extracurricularactivity');
     //Class List by school id
-    let req3 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + `/valuekey/class/${this.defaultSchooolId}`);
+    let req3 = this.http.get<IKeyValue>(environment.API_DOMAIN + `/valuekey/class/${this.defaultSchooolId}`);
     //Responsibilities List
-    let req4 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/responsibilities');
+    let req4 = this.http.get<IKeyValue>(environment.API_DOMAIN + '/valuekey/responsibilities');
     //Citenzenship List
-    let req5 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/schoolcitizenship');
+    let req5 = this.http.get<IKeyValue>(environment.API_DOMAIN + '/valuekey/schoolcitizenship');
     //Country List
-    let req6 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/country');
+    let req6 = this.http.get<IKeyValue>(environment.API_DOMAIN + '/valuekey/country');
 
     forkJoin(req1, req2, req3, req4, req5, req6).subscribe(
       json => 
@@ -69,7 +68,7 @@ export class EditStudentsComponent implements OnInit {
               //Load Account data
               this.route.paramMap.subscribe(params => { 
                 this.studentid = params.get('student_id'); 
-                this.http.get<IAccount>(AppGlobals.API_DOMAIN + '/accounts/' + this.studentid).
+                this.http.get<IAccount>(environment.API_DOMAIN + '/accounts/' + this.studentid).
                 subscribe(data => {
                   this.getStateList(data.country_id-1);
                   this.Students = data;
@@ -88,7 +87,7 @@ export class EditStudentsComponent implements OnInit {
 
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const options:any = {headers, responseType:"json"};
-    const url = AppGlobals.API_DOMAIN + '/accounts/' + account.acconut_id;
+    const url = environment.API_DOMAIN + '/accounts/' + account.acconut_id;
        
     this.http.put(url, account, options)
     .subscribe(data => {

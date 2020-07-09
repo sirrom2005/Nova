@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
-import { AppGlobals } from "../common/app-globals";
+import { environment } from '../../environments/environment'
 import { IAccount } from "../Interface/IAccount";
 import { IBehavior } from '../Interface/IBehavior';
 import { IKeyValue } from '../Interface/IValueKey';
@@ -45,9 +44,9 @@ export class ViewStudentComponent implements OnInit {
     this.route.paramMap.subscribe(params => { 
       this.Studentid = params.get('student_id'); 
       //Get Student Account
-      let req1 = this.http.get<IAccount>(AppGlobals.API_DOMAIN + '/accounts/' + this.Studentid);
+      let req1 = this.http.get<IAccount>(environment.API_DOMAIN + '/accounts/' + this.Studentid);
       //conductList List
-      let req2 = this.http.get<IKeyValue>(AppGlobals.API_DOMAIN + '/valuekey/conductList');
+      let req2 = this.http.get<IKeyValue>(environment.API_DOMAIN + '/valuekey/conductList');
       forkJoin(req1, req2).subscribe(
         json => 
               {
@@ -63,7 +62,7 @@ export class ViewStudentComponent implements OnInit {
 
   fetchStudentbehavior() {
       //Student behavior 
-      this.http.get<any>(AppGlobals.API_DOMAIN + '/studentbehavior/student/' + this.Studentid)
+      this.http.get<any>(environment.API_DOMAIN + '/studentbehavior/student/' + this.Studentid)
       .subscribe(data => {
         this.DisiplinaryList  = data.filter(x => x.conduct.type_id == 2);
         this.MeritList        = data.filter(x => x.conduct.type_id == 3);
@@ -103,7 +102,7 @@ export class ViewStudentComponent implements OnInit {
 
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const options:any = {headers, responseType:"json"};
-    const url = AppGlobals.API_DOMAIN + '/studentbehavior';
+    const url = environment.API_DOMAIN + '/studentbehavior';
        
     this.btnDisable = true;
     this.http.post<number>(url, body, options)
@@ -128,7 +127,7 @@ export class ViewStudentComponent implements OnInit {
   deleteBehavior(){
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const options:any = {headers, responseType:"json"};
-    const url = AppGlobals.API_DOMAIN + '/studentbehavior/' + this.deleteKey;
+    const url = environment.API_DOMAIN + '/studentbehavior/' + this.deleteKey;
        
     this.http.delete(url, options).subscribe(
       data => {

@@ -12,6 +12,7 @@ import { SidemenuComponent } from './sidemenu/sidemenu.component';
 import { ViewSchoolComponent } from './view-school/view-school.component';
 import { ExamsComponent } from './exams/exams.component';
 import { ManageExamComponent } from './exams/manage-exam.component';
+import { GenerateReportComponent } from './generate-report/generate-report.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { ManageExamComponent } from './exams/manage-exam.component';
     SidemenuComponent,
     ViewSchoolComponent,
     ExamsComponent,
-    ManageExamComponent
+    ManageExamComponent,
+    GenerateReportComponent
   ],
   imports: [
     BrowserModule,
