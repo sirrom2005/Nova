@@ -6,6 +6,7 @@ import { EditStudentsComponent } from '../app/edit-students/edit-students.compon
 import { ViewSchoolComponent } from '../app/view-school/view-school.component';
 import { ExamsComponent } from '../app/exams/exams.component';
 import { ManageExamComponent } from './exams/manage-exam.component';
+import { GenerateReportComponent } from './generate-report/generate-report.component';
 
 const routes: Routes = [
   { path: 'students', component: StudentsComponent },
@@ -14,7 +15,8 @@ const routes: Routes = [
   { path: 'view-student/:student_id', component: ViewStudentComponent },
   { path: 'view-school', component: ViewSchoolComponent },
   { path: 'exams', component: ExamsComponent },
-  { path: 'manage-exam/:id', component: ManageExamComponent }
+  { path: 'manage-exam/:id', component: ManageExamComponent },
+  { path: 'generate-report', component: GenerateReportComponent }
 ];
 
 @NgModule({
