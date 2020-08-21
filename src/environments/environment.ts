@@ -4,7 +4,10 @@
 
 export const environment = {
   production: false,
-  API_DOMAIN: "http://localhost:2020/api/v1"
+  VERSION: "local",
+  API_DOMAIN: "http://localhost:2020/api/v1",
+  JWT_TOKEN_KEY: "jwt_token",
+  NOVA_USER_KEY: "nova_user_key"
 };
 
 /*

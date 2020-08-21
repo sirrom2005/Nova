@@ -7,16 +7,30 @@ import { ViewSchoolComponent } from '../app/view-school/view-school.component';
 import { ExamsComponent } from '../app/exams/exams.component';
 import { ManageExamComponent } from './exams/manage-exam.component';
 import { GenerateReportComponent } from './generate-report/generate-report.component';
+import { SecurityGuard } from './services/security.guard';
+import { LoginComponent } from './login/login.component';
+import { AdminComponent } from './admin/admin.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { Error404Component } from './common/error404/error404.component';
 
 const routes: Routes = [
-  { path: 'students', component: StudentsComponent },
-  { path: 'students/:form_class', component: StudentsComponent },
-  { path: 'edit-student/:student_id', component: EditStudentsComponent },
-  { path: 'view-student/:student_id', component: ViewStudentComponent },
-  { path: 'view-school', component: ViewSchoolComponent },
-  { path: 'exams', component: ExamsComponent },
-  { path: 'manage-exam/:id', component: ManageExamComponent },
-  { path: 'generate-report', component: GenerateReportComponent }
+  { path: '', component: LoginComponent},
+  { path: 'admin', component: AdminComponent, 
+    children: [
+      { path: '',                         component: DashboardComponent,      canActivate: [SecurityGuard] },
+      { path: 'students',                 component: StudentsComponent,       canActivate: [SecurityGuard] },
+      { path: 'students/:form_class',     component: StudentsComponent,       canActivate: [SecurityGuard] },
+      { path: 'edit-student/:student_id', component: EditStudentsComponent,   canActivate: [SecurityGuard] },
+      { path: 'view-student/:student_id', component: ViewStudentComponent,    canActivate: [SecurityGuard] },
+      { path: 'view-school',              component: ViewSchoolComponent,     canActivate: [SecurityGuard] },
+      { path: 'exams',                    component: ExamsComponent,          canActivate: [SecurityGuard] },
+      { path: 'new-exam',                 component: ManageExamComponent,     canActivate: [SecurityGuard] },
+      { path: 'manage-exam/:id',          component: ManageExamComponent,     canActivate: [SecurityGuard] },
+      { path: 'generate-report',          component: GenerateReportComponent, canActivate: [SecurityGuard] }
+    ]
+  },
+  {path: '404', component: Error404Component},
+  {path: '**', redirectTo: '/404'}
 ];
 
 @NgModule({

@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment'
 import { ExamQuestion } from '../Interface/ExamQuestion';
 import { ExamAnswer } from '../Interface/ExamAnswer';
-import { FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { error } from 'protractor';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { IKeyValue } from '../Interface/IValueKey';
 import { IExam } from '../Interface/IExam';
+import { Service } from '../services/service.service';
+import { ApiService } from '../services/api.service';
 
+declare var jQuery: any;
 declare function closeModal():any;
 
 @Component({
@@ -24,13 +26,13 @@ export class ManageExamComponent implements OnInit
   success:boolean   = false;
   error:boolean     = false;
   editMode:boolean  = false;
-  pageId:number     = 0;
+  pageId:number;
   question:string;
   formErrorSytle = { 
-                      name: "", 
+                      name:      "", 
                       exam_type: "",
-                      duration: "",
-                      subject: "",
+                      duration:  "",
+                      subject:   "",
                       question    : "",
                       answer_text1: "",
                       answer_text2: "",
@@ -38,7 +40,7 @@ export class ManageExamComponent implements OnInit
                       answer_text4: "",
                       answer_text5: "",
                       answer_text6: "",
-                      exam_date: "",
+                      exam_date:    "",
                       exam_expire_date: ""
                     };
   formData:FormGroup;
@@ -50,8 +52,12 @@ export class ManageExamComponent implements OnInit
   durationList: IKeyValue;
   editId: number;
   btnDisable:boolean = false;
+  errorMessage:string;
 
-  constructor(private formBuilder:FormBuilder, private http:HttpClient, private route: ActivatedRoute, private router: Router){
+  @ViewChild('sd') sdate : ElementRef;
+  @ViewChild('ed') edate : ElementRef;
+
+  constructor(private formBuilder:FormBuilder, private http:HttpClient, private route: ActivatedRoute, private router: Router, private service:Service, private apiService:ApiService){
     this.formData = this.formBuilder.group({
       question:     ['', Validators.required],
       answer_text1: ['', Validators.required],
@@ -64,7 +70,36 @@ export class ManageExamComponent implements OnInit
     });
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void 
+  {
+    jQuery( function() {
+      var options = {
+                      dateFormat: "yy-mm-dd", 
+                      showAnim: "blind",
+                      defaultDate: "+1w",
+                      changeMonth: true,
+                      numberOfMonths: 2};
+      var sDate = jQuery( "#exam_date" ).datepicker(options)
+      .on( "change", function() {
+        eDate.datepicker( "option", "minDate", getDate(this));
+      });
+
+      var eDate = jQuery( "#exam_expire_date" ).datepicker(options)
+      .on( "change", function() {
+        sDate.datepicker( "option", "maxDate", getDate(this));
+      });;
+
+      function getDate(ele:any) {
+        var date:any;
+        try {
+          date = jQuery.datepicker.parseDate( "yy-mm-dd", ele.value );
+        } catch( error ) {
+          date = null;
+        }
+        return date;
+      }
+    });
+
     this.exam =  { 
       id:0,
       name:"",
@@ -82,7 +117,6 @@ export class ManageExamComponent implements OnInit
     };
 
     this.route.paramMap.subscribe(params => { 
-      console.log("Environment >>" + environment.API_DOMAIN);
       let req1 = this.http.get<IKeyValue>(environment.API_DOMAIN + '/valuekey/subjectList');
       let req2 = this.http.get<IKeyValue>(environment.API_DOMAIN + '/valuekey/examinationTypeList');
       let req3 = this.http.get<IKeyValue>(environment.API_DOMAIN + '/valuekey/durationList');
@@ -94,7 +128,8 @@ export class ManageExamComponent implements OnInit
                 this.examinationTypeList  = json[1];
                 this.durationList         = json[2];
 
-                this.pageId = parseInt(params.get('id'));
+                this.pageId = parseInt(params.get('id')) | 0;
+
                 if(this.pageId!=0){
                   this.http.get<any>(environment.API_DOMAIN + '/examination/' + this.pageId).
                   subscribe(
@@ -112,26 +147,28 @@ export class ManageExamComponent implements OnInit
     this.exam = data; 
 
     //examQuestion
-    let jsonStr = atob(data.exam_body);
-    let jsonObj:Array<ExamQuestion> = JSON.parse(jsonStr);
-    let examQuestion:Array<ExamQuestion> = <ExamQuestion[]>jsonObj;
-    this.exam.exam_body = examQuestion;
-    
-    //examAnswer
-    let jsonAnswerStr = atob(data.exam_answer);
-    let jsonObjAnswer:Array<ExamAnswer> = JSON.parse(jsonAnswerStr);
-    let examAnswer:Array<ExamAnswer> = <ExamAnswer[]>jsonObjAnswer;
-    this.exam.exam_answer = examAnswer;
+    if(data!=null){
+      let jsonStr = atob(data.exam_body);
+      let jsonObj:Array<ExamQuestion> = JSON.parse(jsonStr);
+      let examQuestion:Array<ExamQuestion> = <ExamQuestion[]>jsonObj;
+      this.exam.exam_body = examQuestion;
+
+      //examAnswer
+      let jsonAnswerStr = atob(data.exam_answer);
+      let jsonObjAnswer:Array<ExamAnswer> = JSON.parse(jsonAnswerStr);
+      let examAnswer:Array<ExamAnswer> = <ExamAnswer[]>jsonObjAnswer;
+      this.exam.exam_answer = examAnswer;
+    }
   }
 
   AddQuestionPost()
   {
     this.submitted = true;
     this.error = false;
-
+    
     let timeStamp = Date.now();
 
-    const body = {
+    const questionAnswer = {
       timeStamp: timeStamp,
       question: this.formData.controls.question.value,
       answer_text1: this.formData.controls.answer_text1.value,
@@ -139,24 +176,27 @@ export class ManageExamComponent implements OnInit
       answer_text3: this.formData.controls.answer_text3.value,
       answer_text4: this.formData.controls.answer_text4.value,
       answer_text5: this.formData.controls.answer_text5.value,
-      answer_text6: this.formData.controls.answer_text6.value,
-      exam_date: this.formData.controls.exam_date.value,
-      exam_expire_date: this.formData.controls.exam_expire_date.value
+      answer_text6: this.formData.controls.answer_text6.value
     };
 
     const answer = {timeStamp: timeStamp, answer: this.formData.controls.answer.value };
 
-    this.formErrorSytle.question     = (body.question==null     || body.question.trim()==""    ) ? "is-invalid" : "" ;
-    this.formErrorSytle.answer_text1 = (body.answer_text1==null || body.answer_text1.trim()=="") ? "is-invalid" : "" ;
-    this.formErrorSytle.answer_text2 = (body.answer_text2==null || body.answer_text2.trim()=="") ? "is-invalid" : "" ;
-    this.formErrorSytle.exam_date    = (body.exam_date==null || body.exam_date.trim()=="") ? "is-invalid" : "" ;
-    this.formErrorSytle.exam_expire_date = (body.exam_expire_date==null || body.exam_expire_date.trim()=="") ? "is-invalid" : "" ;
+    this.formErrorSytle.question     = (questionAnswer.question==null     || questionAnswer.question.trim()==""    ) ? "is-invalid" : "" ;
+    this.formErrorSytle.answer_text1 = (questionAnswer.answer_text1==null || questionAnswer.answer_text1.trim()=="") ? "is-invalid" : "" ;
+    this.formErrorSytle.answer_text2 = (questionAnswer.answer_text2==null || questionAnswer.answer_text2.trim()=="") ? "is-invalid" : "" ;
 
     if(this.formData.invalid){
-      console.log("Errorr");
       this.error = true;
+      if(this.formErrorSytle.question != "is-invalid" && this.formErrorSytle.answer_text1 != "is-invalid" && this.formErrorSytle.answer_text2 != "is-invalid")
+      {
+        if(this.formData.controls.answer.value == "" || this.formData.controls.answer.value == null){
+          this.errorMessage = "Please select the correct answer for this question usng the box on the right";
+        }
+      }
       return;
     }
+
+    this.errorMessage = "";
 
     if(this.editMode == true)
     {
@@ -171,7 +211,7 @@ export class ManageExamComponent implements OnInit
       this.formData.reset();
       closeModal();
     }else{ 
-      this.exam.exam_body.push(body);
+      this.exam.exam_body.push(questionAnswer);
       this.exam.exam_answer.push(answer);
       this.formData.reset();
     }
@@ -201,15 +241,16 @@ export class ManageExamComponent implements OnInit
       allow_retry : (this.exam.allow_retry)? 1 : 0,
       description : "",
       notes       : "",
-      exam_date   : this.exam.exam_date,
-      exam_expire_date:this.exam.exam_expire_date
+      created_by  : this.service.getUserId(),
+      exam_date   : this.sdate.nativeElement.value,
+      exam_expire_date : this.edate.nativeElement.value,
     };
 
     var url = environment.API_DOMAIN + '/examination/';
     this.http.post<any>(url, body, {headers, responseType:"json"})
     .subscribe(post => {
       if(post.name.trim()!=""){
-        this.router.navigate(['exams']);
+        this.router.navigate(['/admin/exams']);
       }
     });
 
@@ -242,6 +283,23 @@ export class ManageExamComponent implements OnInit
     }
     this.formErrorSytle.subject = "";
 
+    if(this.sdate.nativeElement.value.trim() == ""){
+      this.formErrorSytle.exam_date = "is-invalid";
+      return false;
+    }
+    this.formErrorSytle.exam_date = "";
+
+    if(this.edate.nativeElement.value.trim() == ""){
+      this.formErrorSytle.exam_expire_date = "is-invalid";
+      return false;
+    }
+    this.formErrorSytle.exam_expire_date = "";
+
+    if(this.exam.exam_body.length==0){
+      jQuery("#questionRequiredModal").modal('show');
+      return false;
+    }
+    
     return true;
   }
 
@@ -261,11 +319,22 @@ export class ManageExamComponent implements OnInit
   }
 
   AddNew(){
+    this.formData.reset();
     this.editMode = false;
+    this.errorMessage = "";
+    this.formErrorSytle.question = this.formErrorSytle.answer_text1 = this.formErrorSytle.answer_text2 = "";
   }
 
   Delete(id:number){
     this.exam.exam_body.splice(id, 1);
     this.exam.exam_answer.splice(id, 1);
+  }
+
+  deleteEvent(){
+    this.apiService.deleteExamination(this.pageId).
+    subscribe((data: any) => {
+      jQuery("#deleteExamModal").modal('hide');
+      this.router.navigate(['/admin/exams']);
+    });
   }
 }

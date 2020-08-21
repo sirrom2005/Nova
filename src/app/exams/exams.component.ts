@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment'
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-exams',
@@ -9,15 +9,17 @@ import { environment } from '../../environments/environment'
 })
 export class ExamsComponent implements OnInit 
 {
+  username:string
   dataList:Array<any> = [];
+  showContent:boolean = false;
 
-  constructor(private http:HttpClient,) { }
+  constructor(private http:HttpClient, private service:ApiService) { }
 
   ngOnInit(): void {
-    this.http.get<any>(environment.API_DOMAIN + '/examination/').
-    subscribe(data => {
+    this.service.getExaminationList()
+    .subscribe(data => {
       this.dataList = data;
+      this.showContent = true;
     });
   }
-
 }
