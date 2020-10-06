@@ -1,9 +1,14 @@
+<ng-template [ngIf]="Student">
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Students Information</h1>
+    <a routerLink="/admin/edit-student/{{Student.acconut_id}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-edit fa-sm text-white-50"></i> Edit</a>
+</div>
+
 <!-- Modal -->
 <div class="modal fade" id="meritModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">{{ActionTitle}}</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -20,11 +25,10 @@
                 </div>
                 <div class="alert alert-danger" role="alert" *ngIf="sysError" >System error, please contact the system admin</div>
                 <div class="alert alert-warning" role="alert" *ngIf="submitted && formData.controls.comments.errors" >Comment Missing</div>
-                <div class="alert alert-primary" role="alert" *ngIf="success" >Information added</div>
             </div>
             <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary" [disabled]="btnDisable">Save</button>
+            <button type="submit" class="btn btn-primary" >Save</button>
             </div>
         </form>
       </div>
@@ -52,11 +56,6 @@
 </div>
 
 <div class="row">
-    <div class="col-md-12 text-right mb-3">
-        <!--button class="btn btn-success ml-2">Merits</button>
-        <button class="btn btn-danger ml-2">Disiplinary Actions</button-->
-        <a href="edit-student/{{Student.acconut_id}}" class="btn btn-warning ml-2">Edit</a>
-    </div>
     <div class="col-md-6">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
@@ -86,10 +85,10 @@
                         <div>{{Student.street}}</div>
                         <div>{{Student.city_town}}</div>
                         <div>{{Student.zip_code}}</div>
-                        <div>{{Student.parish_id}}</div>
-                        <div>{{Student.country_id}}</div>
+                        <div>{{Student.country_state.name}}</div>
+                        <div>{{Student.country.name}}</div>
                         <div><b>Mobile Phone:</b> {{Student.phone_mobile}}</div>
-                        <div><label><b>Home Phone:</b> {{Student.phone_home}}</label></div>                       
+                        <div><b>Home Phone:</b> {{Student.phone_home}}</div>                       
                     </div>
                 </div>
             </div>
@@ -102,10 +101,9 @@
                 <h6 class="m-0 font-weight-bold text-primary">School Information</h6>
             </div>
             <div class="card-body">
-                <div><b>School :</b> {{Student.accountschool.school_id}}</div> 
-                <div><b>Class Room :</b> {{Student.classroom.name}}</div>
+                <div><b>School :</b> {{Student.account_school.name}}</div> 
+                <div><b>Class Room :</b> {{Student.account_class.name}}</div>
                 <div><b>Enrollment Date :</b> {{Student.enrollment_date}}</div>
-                <div><b>Account Type :</b> {{Student.account_type}}</div>
                 <div><b>House Color :</b> {{Student.housecolor.name}}</div>
                 <p></p>
                 <ul class="list-group" *ngIf="Student.extra_curricular_activity.length > 0" >
@@ -155,3 +153,4 @@
         </div>
     </div>
 </div>
+</ng-template>

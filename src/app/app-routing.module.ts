@@ -12,21 +12,27 @@ import { LoginComponent } from './login/login.component';
 import { AdminComponent } from './admin/admin.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { Error404Component } from './common/error404/error404.component';
+import { ClassroomComponent } from './classroom/classroom.component';
+import { MyClassroomComponent } from './my-classroom/my-classroom.component';
+
 
 const routes: Routes = [
   { path: '', component: LoginComponent},
-  { path: 'admin', component: AdminComponent, 
+  { path: 'login/:action', component: LoginComponent},
+  { path: 'admin', component: AdminComponent,
     children: [
       { path: '',                         component: DashboardComponent,      canActivate: [SecurityGuard] },
       { path: 'students',                 component: StudentsComponent,       canActivate: [SecurityGuard] },
       { path: 'students/:form_class',     component: StudentsComponent,       canActivate: [SecurityGuard] },
+      { path: 'my-classroom',             component: MyClassroomComponent,    canActivate: [SecurityGuard] },
       { path: 'edit-student/:student_id', component: EditStudentsComponent,   canActivate: [SecurityGuard] },
       { path: 'view-student/:student_id', component: ViewStudentComponent,    canActivate: [SecurityGuard] },
       { path: 'view-school',              component: ViewSchoolComponent,     canActivate: [SecurityGuard] },
       { path: 'exams',                    component: ExamsComponent,          canActivate: [SecurityGuard] },
       { path: 'new-exam',                 component: ManageExamComponent,     canActivate: [SecurityGuard] },
       { path: 'manage-exam/:id',          component: ManageExamComponent,     canActivate: [SecurityGuard] },
-      { path: 'generate-report',          component: GenerateReportComponent, canActivate: [SecurityGuard] }
+      { path: 'generate-report',          component: GenerateReportComponent, canActivate: [SecurityGuard] },
+      { path: 'classroom/:class_id',      component: ClassroomComponent,      canActivate: [SecurityGuard] },
     ]
   },
   {path: '404', component: Error404Component},

@@ -1,5 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
@@ -8,29 +7,32 @@ import { environment } from 'src/environments/environment';
 })
 export class Service 
 {
-  constructor(private http:HttpClient, private router: Router) { }
+  constructor(private router: Router) { }
 
-  doLogin(username:string, password:string)
-  {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const body = {
-      username: username,
-      password: password
-    };
+  doLogin(data:any){
+    localStorage.setItem(environment.JWT_TOKEN_KEY, data.jwt);
+    localStorage.setItem(environment.NOVA_USER_KEY, `${this.generateUserKey(data)}`);
+    this.router.navigateByUrl('admin');
+  }
 
-    this.http.post<any>(environment.API_DOMAIN + '/authentication/authenticate', body, {headers, responseType:"json"})
-    .subscribe(data => {
-      if(data.jwt!=null){
-        localStorage.setItem(environment.JWT_TOKEN_KEY, data.jwt);
-        localStorage.setItem(environment.NOVA_USER_KEY, `${this.generateUserKey(data)}`);
-        this.router.navigate(['admin']);
-      }
-    });
+  private doLogoutAction() {
+    localStorage.removeItem(environment.JWT_TOKEN_KEY);
+    localStorage.removeItem(environment.NOVA_USER_KEY);
   }
 
   doLogout(){
-    localStorage.removeItem(environment.JWT_TOKEN_KEY);
+    this.doLogoutAction();
     this.router.navigate(['/']);
+  }
+
+  sessionExpireLogout(){
+    this.doLogoutAction();
+    this.router.navigateByUrl('login/session-expired');
+  }
+
+  forbiddenLogout() {
+    this.doLogoutAction();
+    this.router.navigateByUrl('login/forbidden');
   }
 
   getWebToken() : string{
@@ -64,8 +66,12 @@ export class Service
   }
 
   getFooterText():string{
+    return "Copyright &copy; Nova " + this.getCurrentYear();
+  }
+
+  getCurrentYear():number{
     var date = new Date();
-    return "Copyright &copy; Nova " + date.getFullYear();
+    return date.getFullYear();
   }
 
   getVersion(): string {

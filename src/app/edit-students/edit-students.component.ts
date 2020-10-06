@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { environment } from '../../environments/environment'
 import { IAccount } from "../Interface/IAccount";
 import { IKeyValue } from '../Interface/IValueKey';
+import { ApiService } from '../services/api.service';
 import { forkJoin } from 'rxjs';
+import { Service } from '../services/service.service';
 
 @Component({
   selector: 'app-edit-students',
@@ -14,14 +16,13 @@ import { forkJoin } from 'rxjs';
 })
 
 export class EditStudentsComponent implements OnInit {
-  studentid:String;
+  studentid:number;
   Students:IAccount;
   formData:FormGroup;
   extraCurricular:IKeyValue;
   responsibilities:IKeyValue;
   classList:IKeyValue;
   houseColor:IKeyValue;
-  defaultSchooolId = 2011040016;
   schoolcitizenship:IKeyValue;
   countrylist: {};
   statelist: {};
@@ -29,100 +30,122 @@ export class EditStudentsComponent implements OnInit {
   houseColorIdLst:Number;
   validat:boolean = false;
 
-  constructor(private formBuilder:FormBuilder, private http:HttpClient, private route: ActivatedRoute) { 
-    /*this.formData = this.formBuilder.group({
-      acconut_id: ['', Validators.required],
-      firstname: ['', Validators.required],
-      middlename: ['', Validators.required],
-      lastname: ['', Validators.required],
-      gender: ['', Validators.required],
-      dob: ['', Validators.required],
-      enrollment_date: ['', Validators.required]
-    });*/
-  }
+  constructor(private http:HttpClient, private route: ActivatedRoute, private api:ApiService, private router: Router, private service:Service) {}
 
   ngOnInit() {
-    //House Color List
-    let req1 = this.http.get<IKeyValue>(environment.API_DOMAIN + `/valuekey/housecolor/${this.defaultSchooolId}`);
-    //Extra Curricular Activity List
-    let req2 = this.http.get<IKeyValue>(environment.API_DOMAIN + '/valuekey/extracurricularactivity');
-    //Class List by school id
-    let req3 = this.http.get<IKeyValue>(environment.API_DOMAIN + `/valuekey/class/${this.defaultSchooolId}`);
-    //Responsibilities List
-    let req4 = this.http.get<IKeyValue>(environment.API_DOMAIN + '/valuekey/responsibilities');
-    //Citenzenship List
-    let req5 = this.http.get<IKeyValue>(environment.API_DOMAIN + '/valuekey/schoolcitizenship');
-    //Country List
-    let req6 = this.http.get<IKeyValue>(environment.API_DOMAIN + '/valuekey/country');
+    this.api.getSchoolIdByUserId(this.service.getUserId())
+    .subscribe(
+      (id: any) => {
+        //House Color List
+        let reqa1 = this.http.get<IKeyValue>(environment.API_DOMAIN + `/valuekey/housecolor/${id}`);
+        //Class List by school id
+        let reqa2 = this.http.get<IKeyValue>(environment.API_DOMAIN + `/valuekey/class/${id}`);
+        forkJoin([reqa1, reqa2]).subscribe(
+          json => 
+                {
+                  this.houseColor = json[0];
+                  this.classList  = json[1];
+                }
+        );
+      }
+    );
 
-    forkJoin(req1, req2, req3, req4, req5, req6).subscribe(
+    //Extra Curricular Activity List
+    let req1 = this.http.get<IKeyValue>(environment.API_DOMAIN + '/valuekey/extracurricularactivity');
+    //Responsibilities List
+    let req2 = this.http.get<IKeyValue>(environment.API_DOMAIN + '/valuekey/responsibilities');
+    //Citenzenship List
+    let req3 = this.http.get<IKeyValue>(environment.API_DOMAIN + '/valuekey/schoolcitizenship');
+    //Country List
+    let req4 = this.http.get<IKeyValue>(environment.API_DOMAIN + '/valuekey/country');
+
+    forkJoin([req1, req2, req3, req4]).subscribe(
       json => 
             {
-              this.houseColor         = json[0];
-              this.extraCurricular    = json[1];
-              this.classList          = json[2];
-              this.responsibilities   = json[3];
-              this.schoolcitizenship  = json[4];
-              this.countrylist        = json[5];
+              this.extraCurricular    = json[0];
+              this.responsibilities   = json[1];
+              this.schoolcitizenship  = json[2];
+              this.countrylist        = json[3];
               
               //Load Account data
               this.route.paramMap.subscribe(params => { 
-                this.studentid = params.get('student_id'); 
-                this.http.get<IAccount>(environment.API_DOMAIN + '/accounts/' + this.studentid).
-                subscribe(data => {
-                  this.getStateList(data.country_id-1);
+                this.studentid = parseInt(params.get('student_id')); 
+                this.api.getStudentAccount(this.studentid)
+                .subscribe((data: IAccount) => {
+                  this.getStateList(data.country.id);
                   this.Students = data;
                 });
-              });
-             
+              });            
             }      
     );
   }
 
-  onSubmit(account) {
+  onSubmit(account:IAccount) {
     this.validat = this.validatControl();
     if(!this.validat){
       return;
     }
 
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const options:any = {headers, responseType:"json"};
-    const url = environment.API_DOMAIN + '/accounts/' + account.acconut_id;
-       
-    this.http.put(url, account, options)
-    .subscribe(data => {
-      console.log(data);
-    });
+    this.api.postStudentAccount(account)
+    .subscribe(
+      (      data: any) => {
+        this.router.navigate(['/admin/view-student/'+this.Students.acconut_id]);
+      },
+      () => {
+        console.error("ERROE");
+      }
+    );
   }
 
   validatControl() 
   {
-    console.log((this.Students.housecolor.id == 0) + " <> " + (this.Students.classroom.id>0));
+    if(this.Students.firstname.trim() == ""){
+      return false;
+    }
+
+    if(this.Students.lastname.trim() == ""){
+      return false;
+    }
+
+    if(this.Students.dob.trim() == ""){
+      return false;
+    }
+
+    if(this.Students.email.trim() == ""){
+      return false;
+    }
+
+    if(this.Students.phone_home.trim() == ""){
+      return false;
+    }
 
     if(this.Students.housecolor.id == 0){
       return false;
     }
 
-    if(this.Students.classroom.id==0)
+    if(this.Students.account_class.id==0)
     {
       return false;
     }
 
-    /*if(this.Students.country_id == 0){
+    if(this.Students.country.id == 0){
       return false;
     }
 
-    if(this.Students.parish_id == 0)
+    if(this.Students.country_state.id == 0)
     {
       return false;
-    }*/
+    }
     
     return true;
   }
 
   /*Set State list*/
-  getStateList(idx){
-    this.statelist = this.countrylist[idx].countrystate;
+  getStateList(idx: number){
+    this.api.getCountryStateList(idx)
+    .subscribe((data: {}) => {
+      this.statelist = data;
+    });
   }
   /*Get bool*/
   getExtracurricularState(obj:any){
@@ -130,7 +153,7 @@ export class EditStudentsComponent implements OnInit {
     return val>=0 ? true: false;
   }
   /*setExtracurricular state*/
-  setExtracurricular(state:boolean, obj:any, idx:number){
+  setExtracurricular(state:boolean, obj:any){
     if(state){
       this.Students.extra_curricular_activity.push(obj);
     }else{
@@ -144,7 +167,7 @@ export class EditStudentsComponent implements OnInit {
     return val>=0 ? true: false;
   }
   /*setResponsibilities state*/
-  setResponsibilities(state:boolean, obj:any, idx:number){
+  setResponsibilities(state:boolean, obj:any){
     if(state){
       this.Students.responsibilities.push(obj);
     }else{
@@ -158,7 +181,7 @@ export class EditStudentsComponent implements OnInit {
     return val>=0 ? true: false;
   }
   /*setResponsibilities state*/
-  setSchoolCitizenship(state:boolean, obj:any, idx:number){
+  setSchoolCitizenship(state:boolean, obj:any){
     if(state){
       this.Students.citizenship.push(obj);
     }else{

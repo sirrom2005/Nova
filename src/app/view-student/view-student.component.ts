@@ -6,8 +6,9 @@ import { IAccount } from "../Interface/IAccount";
 import { IBehavior } from '../Interface/IBehavior';
 import { IKeyValue } from '../Interface/IValueKey';
 import { forkJoin } from 'rxjs';
-import { FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { isNumber } from 'util';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+declare var jQuery: any;
 
 @Component({
   selector: 'app-view-student',
@@ -44,7 +45,7 @@ export class ViewStudentComponent implements OnInit {
     this.route.paramMap.subscribe(params => { 
       this.Studentid = params.get('student_id'); 
       //Get Student Account
-      let req1 = this.http.get<IAccount>(environment.API_DOMAIN + '/accounts/' + this.Studentid);
+      let req1 = this.http.get<IAccount>(environment.API_DOMAIN + '/students/' + this.Studentid);
       //conductList List
       let req2 = this.http.get<IKeyValue>(environment.API_DOMAIN + '/valuekey/conductList');
       forkJoin(req1, req2).subscribe(
@@ -55,7 +56,6 @@ export class ViewStudentComponent implements OnInit {
               }     
       );
     });
-
 
     this.fetchStudentbehavior();
   }
@@ -96,7 +96,7 @@ export class ViewStudentComponent implements OnInit {
       teacher_id: 1047025,
       comments:   this.formData.controls.comments.value,
       student_id: this.Student.acconut_id,
-      class_room: {id:this.Student.classroom.id},
+      class_room: {id:this.Student.account_class.id},
       conduct:    {id: this.formData.controls.conduct_id.value}
     };
 
@@ -107,9 +107,9 @@ export class ViewStudentComponent implements OnInit {
     this.btnDisable = true;
     this.http.post<number>(url, body, options)
     .subscribe(
-      data => {
-        this.success = true;
+      () => {
         this.fetchStudentbehavior();
+        jQuery("#meritModal").modal('hide');
       },
       error => {
         this.sysError = true;

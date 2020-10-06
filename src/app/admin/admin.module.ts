@@ -10,6 +10,9 @@ import { ViewSchoolComponent } from '../view-school/view-school.component';
 import { ViewStudentComponent } from '../view-student/view-student.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { DashboardComponent } from '../dashboard/dashboard.component';
+import { ClassroomComponent } from '../classroom/classroom.component';
+import { MyClassroomComponent } from '../my-classroom/my-classroom.component';
 
 @NgModule({
   declarations: [
@@ -21,12 +24,15 @@ import { RouterModule } from '@angular/router';
     ExamsComponent,
     ManageExamComponent,
     GenerateReportComponent,
+    DashboardComponent,
+    ClassroomComponent,
+    MyClassroomComponent
   ],
   imports: [
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule 
   ]
 })
 export class AdminModule { }

@@ -60,17 +60,18 @@
         </div>
     </div>
 
+    <!-- Question/Answer -->
     <div class="col-md-6" *ngIf="exam.exam_body.length>0">
         <div class="card shadow mb-4">
             <div class="card-header">
-                <h6 class="m-0 font-weight-bold text-primary">Create Exams</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Question/Answer</h6>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-sm-12">
                         <div *ngIf="exam">
                             <ul class="list-group mb-4" *ngFor="let val of exam.exam_body; index as i">
-                                <li class="list-group-item list-group-item-secondary">
+                                <li class="list-group-item font-weight-bold">
                                     <span class="float-right">
                                         <a (click)=LoadEdit(i) data-toggle="modal" data-target="#addquestion"><i class="far fa-edit text-primary"></i></a>&nbsp;
                                         <a (click)=Delete(i)  ><i class="fas fa-trash-alt text-danger"></i></a>

@@ -1,10 +1,7 @@
+<ng-template [ngIf]="Students">
 <form (ngSubmit)="onSubmit(Students)" >
     <div class="row">
         <div class="col-sm-6" *ngIf="Students" >
-            <div class="form-group">
-                <label for="acconut_id">Student ID</label>
-                <input type="text" class="form-control" id="acconut_id" value="{{Students.acconut_id}}" readonly>
-            </div>
             <div class="form-group">
                 <label for="firstname">First Name</label>
                 <input type="text" class="form-control" [(ngModel)]="Students.firstname" name="firstname" id="firstname" >
@@ -25,6 +22,7 @@
                 <label for="dob">Date Of Birth</label>
                 <input type="date" class="form-control" [(ngModel)]="Students.dob" name="dob" id="dob" >
             </div>
+            
             <div class="form-group">
                 <label for="F" class="mr-3">
                     <input type="radio" [(ngModel)]="Students.gender" name="gender" id="F" value="F"> Female    
@@ -50,23 +48,23 @@
             </div>
             <div class="form-group">
                 <label for="country_id">Country</label>
-                <select class="form-control" [(ngModel)]="Students.country_id" name="country_id" id="country_id" (change)="getStateList($event.target.selectedIndex)" >
+                <select class="form-control" [(ngModel)]="Students.country.id" name="country_id" id="country_id" (change)="getStateList($event.target.selectedIndex+1)" >
                     <option *ngFor="let country of countrylist" value="{{country.id}}">{{country.name}}</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="country_id">State/Parish</label>
-                <select class="form-control" [(ngModel)]="Students.parish_id" name="parish_id" id="parish_id" >
+                <select class="form-control" [(ngModel)]="Students.country_state.state_id" name="parish_id" id="parish_id" >
                     <option *ngFor="let state of statelist" value="{{state.state_id}}">{{state.name}}</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="phone_home">Home Phone</label>
-                <input type="tel" class="form-control" [(ngModel)]="Students.phone_home" name="phone_home" id="phone_home">
+                <input type="tel" class="form-control" [(ngModel)]="Students.phone_home" name="phone_home" id="phone_home" maxlength="15">
             </div>
             <div class="form-group">
                 <label for="phone_mobile">Mobile Phone</label>
-                <input type="tel" class="form-control" [(ngModel)]="Students.phone_mobile" name="phone_mobile" id="phone_mobile" >
+                <input type="tel" class="form-control" [(ngModel)]="Students.phone_mobile" name="phone_mobile" id="phone_mobile" maxlength="15" >
             </div>
         </div>
     </div>
@@ -75,7 +73,7 @@
         <div class="col-sm-6">
             <div class="form-group" *ngIf="classList">
                 <label for="class_room_id">Class Room</label>
-                <select class="form-control" [(ngModel)]="Students.classroom.id" name="class_room_id" id="class_room_id" >
+                <select class="form-control" [(ngModel)]="Students.account_class.id" name="class_room_id" id="class_room_id" >
                     <option *ngFor="let clss of classList"  value="{{clss.id}}" >{{clss.name}}</option>
                 </select>
             </div>
@@ -90,7 +88,7 @@
                         {{extObj.name}}
                     </label>
                 </div>
-            </div>
+            </div> 
             <div class="form-group">
                 Responsibilities
                 <div class="form-check" *ngFor="let resObj of responsibilities; let i = index">
@@ -103,7 +101,7 @@
                     </label>
                 </div>
             </div>  
-        </div> 
+        </div>
         <div class="col-sm-6">
             <div class="form-group" *ngIf="houseColor">
                 <label for="house_color_id">House-color</label>
@@ -123,9 +121,10 @@
                     </label>
                 </div>
             </div>  
-        </div>   
-    </div>
+        </div> 
+    </div> 
     <div class="text-right">
         <button class="btn btn-primary mb-3">Submit</button>
     </div>
 </form>
+</ng-template>

@@ -1,9 +1,10 @@
 /*
-* Plug and
+* Plug and play
 */
 import { Injectable } from "@angular/core";
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HTTP_INTERCEPTORS } from '@angular/common/http'
-import { Observable } from 'rxjs';
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HTTP_INTERCEPTORS } from '@angular/common/http'
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Service } from './service.service';
 
 @Injectable()
@@ -21,7 +22,18 @@ export class AuthHttpInterceptor implements HttpInterceptor
             setHeaders: {Authorization: authToken}
         });
 
-        return next.handle(authRequest);
+        return next.handle(authRequest)
+        .pipe(
+            catchError((error: HttpErrorResponse) => {
+                if(error.status === 500) {
+                    this.service.sessionExpireLogout();
+                }
+                if(error.status === 403) {
+                    this.service.forbiddenLogout();
+                }
+                return throwError(error);
+            })
+        );
     }
 }
 

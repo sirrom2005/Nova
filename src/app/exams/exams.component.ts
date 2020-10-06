@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ApiService } from '../services/api.service';
 
 @Component({
@@ -13,10 +12,10 @@ export class ExamsComponent implements OnInit
   dataList:Array<any> = [];
   showContent:boolean = false;
 
-  constructor(private http:HttpClient, private service:ApiService) { }
+  constructor(private api:ApiService) { }
 
   ngOnInit(): void {
-    this.service.getExaminationList()
+    this.api.getExaminationList()
     .subscribe(data => {
       this.dataList = data;
       this.showContent = true;
