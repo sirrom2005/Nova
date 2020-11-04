@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment'
-import { IAccount } from "../Interface/IAccount";
 import { IBehavior } from '../Interface/IBehavior';
 import { IKeyValue } from '../Interface/IValueKey';
 import { forkJoin } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { IStudent } from '../Interface/IStudent';
 
 declare var jQuery: any;
 
@@ -25,7 +25,7 @@ export class ViewStudentComponent implements OnInit {
   sysError:boolean  = false;
 
   Studentid:string;
-  Student:IAccount;
+  Student:IStudent;
   ActionTitle:string;
   MeritList:Array<IBehavior>;
   DisiplinaryList:Array<IBehavior>;
@@ -45,7 +45,7 @@ export class ViewStudentComponent implements OnInit {
     this.route.paramMap.subscribe(params => { 
       this.Studentid = params.get('student_id'); 
       //Get Student Account
-      let req1 = this.http.get<IAccount>(environment.API_DOMAIN + '/students/' + this.Studentid);
+      let req1 = this.http.get<IStudent>(environment.API_DOMAIN + '/students/' + this.Studentid);
       //conductList List
       let req2 = this.http.get<IKeyValue>(environment.API_DOMAIN + '/valuekey/conductList');
       forkJoin(req1, req2).subscribe(

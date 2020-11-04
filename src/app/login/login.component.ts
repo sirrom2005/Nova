@@ -15,6 +15,7 @@ import { throwError } from 'rxjs/internal/observable/throwError';
 export class LoginComponent implements OnInit {
   formData:FormGroup;
   getCurrentYear:number = this.service.getCurrentYear();
+  appVersion:string = this.service.getVersion();
   errorMessage:string;
   formErrorSytle = {username: "", password: ""};
 
@@ -51,7 +52,7 @@ export class LoginComponent implements OnInit {
     .pipe(
       catchError((error: HttpErrorResponse) => {
         if(error.status === 403) {
-          this.errorMessage = "Invalid username password.";
+          this.errorMessage = "Invalid username password";
           return  throwError(error);
         }
       })

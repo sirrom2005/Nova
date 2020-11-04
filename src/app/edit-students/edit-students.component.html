@@ -1,70 +1,70 @@
-<ng-template [ngIf]="Students">
-<form (ngSubmit)="onSubmit(Students)" >
+<ng-template [ngIf]="Student">
+<form (ngSubmit)="onSubmit(Student)" >
     <div class="row">
-        <div class="col-sm-6" *ngIf="Students" >
+        <div class="col-sm-6" *ngIf="Student" >
             <div class="form-group">
                 <label for="firstname">First Name</label>
-                <input type="text" class="form-control" [(ngModel)]="Students.firstname" name="firstname" id="firstname" >
+                <input type="text" class="form-control" [(ngModel)]="Student.firstname" name="firstname" id="firstname" >
             </div>
             <div class="form-group">
                 <label for="middlename">Middle Name</label>
-                <input type="text" class="form-control" [(ngModel)]="Students.middlename" name="middlename" id="middlename" >
+                <input type="text" class="form-control" [(ngModel)]="Student.middlename" name="middlename" id="middlename" >
             </div>
             <div class="form-group">
                 <label for="lastname">Last Name</label>
-                <input type="text" class="form-control" [(ngModel)]="Students.lastname" name="lastname" id="lastname" >
+                <input type="text" class="form-control" [(ngModel)]="Student.lastname" name="lastname" id="lastname" >
             </div> 
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="text" class="form-control" [(ngModel)]="Students.email" name="email" id="email">
+                <input type="text" class="form-control" [(ngModel)]="Student.email" name="email" id="email">
             </div>
             <div class="form-group">
                 <label for="dob">Date Of Birth</label>
-                <input type="date" class="form-control" [(ngModel)]="Students.dob" name="dob" id="dob" >
+                <input type="date" class="form-control" [(ngModel)]="Student.dob" name="dob" id="dob" >
             </div>
             
             <div class="form-group">
                 <label for="F" class="mr-3">
-                    <input type="radio" [(ngModel)]="Students.gender" name="gender" id="F" value="F"> Female    
+                    <input type="radio" [(ngModel)]="Student.gender" name="gender" id="F" value="F"> Female    
                 </label> 
                 <label for="M">
-                    <input type="radio" [(ngModel)]="Students.gender" name="gender" id="M" value="M" > Male 
+                    <input type="radio" [(ngModel)]="Student.gender" name="gender" id="M" value="M" > Male 
                 </label>
             </div>          
         </div>
 
-        <div class="col-sm-6" *ngIf="Students" >
+        <div class="col-sm-6" *ngIf="Student" >
             <div class="form-group">
                 <label for="street">Street</label>
-                <input type="text" class="form-control" [(ngModel)]="Students.street" name="street" id="street" >
+                <input type="text" class="form-control" [(ngModel)]="Student.street" name="street" id="street" >
             </div>
             <div class="form-group">
                 <label for="city_town">City/Town</label>
-                <input type="text" class="form-control" [(ngModel)]="Students.city_town" name="city_town" id="city_town" >
+                <input type="text" class="form-control" [(ngModel)]="Student.city_town" name="city_town" id="city_town" >
             </div>
             <div class="form-group">
                 <label for="zip_code">Zip Code</label>
-                <input type="text" class="form-control" [(ngModel)]="Students.zip_code" name="zip_code" id="zip_code" >
+                <input type="text" class="form-control" [(ngModel)]="Student.zip_code" name="zip_code" id="zip_code" >
             </div>
             <div class="form-group">
                 <label for="country_id">Country</label>
-                <select class="form-control" [(ngModel)]="Students.country.id" name="country_id" id="country_id" (change)="getStateList($event.target.selectedIndex+1)" >
+                <select class="form-control" [(ngModel)]="Student.country.id" name="country_id" id="country_id" (change)="getStateList($event.target.selectedIndex+1)" >
                     <option *ngFor="let country of countrylist" value="{{country.id}}">{{country.name}}</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="country_id">State/Parish</label>
-                <select class="form-control" [(ngModel)]="Students.country_state.state_id" name="parish_id" id="parish_id" >
+                <select class="form-control" [(ngModel)]="Student.country_state.state_id" name="parish_id" id="parish_id" >
                     <option *ngFor="let state of statelist" value="{{state.state_id}}">{{state.name}}</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="phone_home">Home Phone</label>
-                <input type="tel" class="form-control" [(ngModel)]="Students.phone_home" name="phone_home" id="phone_home" maxlength="15">
+                <input type="tel" class="form-control" [(ngModel)]="Student.phone_home" name="phone_home" id="phone_home" maxlength="15">
             </div>
             <div class="form-group">
                 <label for="phone_mobile">Mobile Phone</label>
-                <input type="tel" class="form-control" [(ngModel)]="Students.phone_mobile" name="phone_mobile" id="phone_mobile" maxlength="15" >
+                <input type="tel" class="form-control" [(ngModel)]="Student.phone_mobile" name="phone_mobile" id="phone_mobile" maxlength="15" >
             </div>
         </div>
     </div>
@@ -73,7 +73,7 @@
         <div class="col-sm-6">
             <div class="form-group" *ngIf="classList">
                 <label for="class_room_id">Class Room</label>
-                <select class="form-control" [(ngModel)]="Students.account_class.id" name="class_room_id" id="class_room_id" >
+                <select class="form-control" [(ngModel)]="Student.account_class.id" name="class_room_id" id="class_room_id" >
                     <option *ngFor="let clss of classList"  value="{{clss.id}}" >{{clss.name}}</option>
                 </select>
             </div>
@@ -83,7 +83,7 @@
                     <label class="form-check-label">
                         <input type="checkbox" 
                         [checked]="getExtracurricularState(extObj)" 
-                        (change)="setExtracurricular($event.target.checked, extObj, i)"
+                        (change)="setExtracurricular($event.target.checked, extObj)"
                         class="form-check-input" value="{{extObj.id}}" >
                         {{extObj.name}}
                     </label>
@@ -95,7 +95,7 @@
                     <label class="form-check-label" >
                         <input type="checkbox" 
                         [checked]="getResponsibilitiesState(resObj)" 
-                        (change)="setResponsibilities($event.target.checked, resObj, i)"
+                        (change)="setResponsibilities($event.target.checked, resObj)"
                         class="form-check-input" value="{{resObj.id}}" >
                         {{resObj.name}}
                     </label>
@@ -105,7 +105,7 @@
         <div class="col-sm-6">
             <div class="form-group" *ngIf="houseColor">
                 <label for="house_color_id">House-color</label>
-                <select class="form-control" [(ngModel)]="Students.housecolor.id" name="id" id="id" >
+                <select class="form-control" [(ngModel)]="Student.housecolor.id" name="id" id="id" >
                     <option *ngFor="let hc of houseColor" value="{{hc.id}}">{{hc.name}}</option>
                 </select>
             </div>
@@ -115,7 +115,7 @@
                     <label class="form-check-label" >
                         <input type="checkbox" 
                         [checked]="getSchoolCitizenshipState(citObj)" 
-                        (change)="setSchoolCitizenship($event.target.checked, citObj, i)"
+                        (change)="setSchoolCitizenship($event.target.checked, citObj)"
                         class="form-check-input" value="{{citObj.id}}" >
                         {{citObj.name}}
                     </label>

@@ -3,11 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormGroup } from '@angular/forms';
 import { environment } from '../../environments/environment'
-import { IAccount } from "../Interface/IAccount";
 import { IKeyValue } from '../Interface/IValueKey';
 import { ApiService } from '../services/api.service';
 import { forkJoin } from 'rxjs';
 import { Service } from '../services/service.service';
+import { IStudent } from '../Interface/IStudent';
 
 @Component({
   selector: 'app-edit-students',
@@ -17,7 +17,7 @@ import { Service } from '../services/service.service';
 
 export class EditStudentsComponent implements OnInit {
   studentid:number;
-  Students:IAccount;
+  Student:IStudent;
   formData:FormGroup;
   extraCurricular:IKeyValue;
   responsibilities:IKeyValue;
@@ -71,16 +71,16 @@ export class EditStudentsComponent implements OnInit {
               this.route.paramMap.subscribe(params => { 
                 this.studentid = parseInt(params.get('student_id')); 
                 this.api.getStudentAccount(this.studentid)
-                .subscribe((data: IAccount) => {
+                .subscribe((data: IStudent) => {
                   this.getStateList(data.country.id);
-                  this.Students = data;
+                  this.Student = data;
                 });
               });            
             }      
     );
   }
 
-  onSubmit(account:IAccount) {
+  onSubmit(account:IStudent) {
     this.validat = this.validatControl();
     if(!this.validat){
       return;
@@ -89,7 +89,7 @@ export class EditStudentsComponent implements OnInit {
     this.api.postStudentAccount(account)
     .subscribe(
       (      data: any) => {
-        this.router.navigate(['/admin/view-student/'+this.Students.acconut_id]);
+        this.router.navigate(['/admin/view-student/'+this.Student.acconut_id]);
       },
       () => {
         console.error("ERROE");
@@ -99,40 +99,40 @@ export class EditStudentsComponent implements OnInit {
 
   validatControl() 
   {
-    if(this.Students.firstname.trim() == ""){
+    if(this.Student.firstname.trim() == ""){
       return false;
     }
 
-    if(this.Students.lastname.trim() == ""){
+    if(this.Student.lastname.trim() == ""){
       return false;
     }
 
-    if(this.Students.dob.trim() == ""){
+    if(this.Student.dob.trim() == ""){
       return false;
     }
 
-    if(this.Students.email.trim() == ""){
+    if(this.Student.email.trim() == ""){
       return false;
     }
 
-    if(this.Students.phone_home.trim() == ""){
+    if(this.Student.phone_home.trim() == ""){
       return false;
     }
 
-    if(this.Students.housecolor.id == 0){
+    if(this.Student.housecolor.id == 0){
       return false;
     }
 
-    if(this.Students.account_class.id==0)
+    if(this.Student.account_class.id==0)
     {
       return false;
     }
 
-    if(this.Students.country.id == 0){
+    if(this.Student.country.id == 0){
       return false;
     }
 
-    if(this.Students.country_state.id == 0)
+    if(this.Student.country_state.state_id == 0)
     {
       return false;
     }
@@ -149,44 +149,44 @@ export class EditStudentsComponent implements OnInit {
   }
   /*Get bool*/
   getExtracurricularState(obj:any){
-    let val = this.Students.extra_curricular_activity.map(x => x.id).indexOf(obj.id);
+    let val = this.Student.extra_curricular_activity.map(x => x.id).indexOf(obj.id);
     return val>=0 ? true: false;
   }
   /*setExtracurricular state*/
   setExtracurricular(state:boolean, obj:any){
     if(state){
-      this.Students.extra_curricular_activity.push(obj);
+      this.Student.extra_curricular_activity.push(obj);
     }else{
-      let key = this.Students.extra_curricular_activity.map(x => x.id).indexOf(obj.id);
-      this.Students.extra_curricular_activity.splice(key,1);
+      let key = this.Student.extra_curricular_activity.map(x => x.id).indexOf(obj.id);
+      this.Student.extra_curricular_activity.splice(key,1);
     }
   }
   /*Get bool*/
   getResponsibilitiesState(obj:any){
-    let val = this.Students.responsibilities.map(x => x.id).indexOf(obj.id);
+    let val = this.Student.responsibilities.map(x => x.id).indexOf(obj.id);
     return val>=0 ? true: false;
   }
   /*setResponsibilities state*/
   setResponsibilities(state:boolean, obj:any){
     if(state){
-      this.Students.responsibilities.push(obj);
+      this.Student.responsibilities.push(obj);
     }else{
-      let key = this.Students.responsibilities.map(x => x.id).indexOf(obj.id);
-      this.Students.responsibilities.splice(key,1);
+      let key = this.Student.responsibilities.map(x => x.id).indexOf(obj.id);
+      this.Student.responsibilities.splice(key,1);
     }
   }
   /*Get bool*/
   getSchoolCitizenshipState(obj:any){
-    let val = this.Students.citizenship.map(x => x.id).indexOf(obj.id);
+    let val = this.Student.citizenship.map(x => x.id).indexOf(obj.id);
     return val>=0 ? true: false;
   }
   /*setResponsibilities state*/
   setSchoolCitizenship(state:boolean, obj:any){
     if(state){
-      this.Students.citizenship.push(obj);
+      this.Student.citizenship.push(obj);
     }else{
-      let key = this.Students.citizenship.map(x => x.id).indexOf(obj.id);
-      this.Students.citizenship.splice(key,1);
+      let key = this.Student.citizenship.map(x => x.id).indexOf(obj.id);
+      this.Student.citizenship.splice(key,1);
     }
   }
   
